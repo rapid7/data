@@ -1,6 +1,6 @@
 # National Exposure
 
-![](https://raw.githubusercontent.com/rapid7/data/master/national-exposure/national-exposure.svg)
+<img src="./national-exposure.svg"/>
 
 Summary data & R Markdown files for <https://community.rapid7.com/community/infosec/blog/2016/06/07/rapid7-releases-new-research>
 
