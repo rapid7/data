@@ -1,6 +1,6 @@
 # National Exposure
 
-<img src="./national-exposure.svg"/>
+<center><img src="./national-exposure.png"/></center>
 
 Summary data & R Markdown files for <https://community.rapid7.com/community/infosec/blog/2016/06/07/rapid7-releases-new-research>
 
