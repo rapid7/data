@@ -1,0 +1,1181 @@
+# National Exposure
+hrbrmstr  
+May 24, 2016  
+
+
+
+```r
+library(fastmatch)
+library(feather)
+library(readr)
+library(countrycode)
+library(data.table)
+library(ggalt)
+library(ggplot2)     # devtools::install_github("hadley/ggplot2)")
+library(ggthemes)
+library(grid)
+library(gridExtra)
+library(htmltools)
+library(iptools)
+library(rgeolocate)
+library(scales)
+library(stringi)
+library(stringr)
+library(viridis)
+library(pbapply)
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(extrafont)
+
+# common theme for all ggplot
+
+theme_sane <- function (base_family = "Arial Narrow", base_size = 11, 
+                        strip_text_family = base_family, strip_text_size = 12,
+                        plot_title_family = "Arial Narrow", plot_title_size = 18, plot_title_margin = 10, 
+                        subtitle_family = "Arial Narrow",  subtitle_size = 12, subtitle_margin = 15, 
+                        caption_family = "Arial Narrow", caption_size = 9, caption_margin = 10, 
+                        axis_title_family = subtitle_family, axis_title_size = 9, axis_title_just = "rt", 
+                        grid = TRUE, axis = FALSE, ticks = FALSE)  {
+  ret <- theme_minimal(base_family = base_family, base_size = base_size)
+  ret <- ret + theme(legend.background = element_blank())
+  ret <- ret + theme(legend.key = element_blank())
+  if (inherits(grid, "character") | grid == TRUE) {
+    ret <- ret + theme(panel.grid = element_line(color = "#2b2b2bdd", size = 0.1))
+    ret <- ret + theme(panel.grid.major = element_line(color = "#2b2b2b99", size = 0.1))
+    ret <- ret + theme(panel.grid.minor = element_line(color = "#2b2b2b99", size = 0.05))
+    if (inherits(grid, "character")) {
+      if (regexpr("X", grid)[1] < 0) ret <- ret + theme(panel.grid.major.x = element_blank())
+      if (regexpr("Y", grid)[1] < 0) ret <- ret + theme(panel.grid.major.y = element_blank())
+      if (regexpr("x", grid)[1] < 0) ret <- ret + theme(panel.grid.minor.x = element_blank())
+      if (regexpr("y", grid)[1] < 0) ret <- ret + theme(panel.grid.minor.y = element_blank())
+    }
+  }
+  else {
+    ret <- ret + theme(panel.grid = element_blank())
+  }
+  if (inherits(axis, "character") | axis == TRUE) {
+    ret <- ret + theme(axis.line = element_line(color = "#2b2b2b", size = 0.15))
+    if (inherits(axis, "character")) {
+      axis <- tolower(axis)
+      if (regexpr("x", axis)[1] < 0) {
+        ret <- ret + theme(axis.line.x = element_blank())
+      } else {
+        ret <- ret + theme(axis.line.x = element_line(color = "#2b2b2b", size = 0.15))
+      }
+      
+      if (regexpr("y", axis)[1] < 0) {
+        ret <- ret + theme(axis.line.y = element_blank())
+      } else {
+        ret <- ret + theme(axis.line.y = element_line(color = "#2b2b2b", size = 0.15))
+      }
+    }
+    else {
+      ret <- ret + theme(axis.line.x = element_line(color = "#2b2b2b", size = 0.15))
+      ret <- ret + theme(axis.line.y = element_line(color = "#2b2b2b", size = 0.15))
+    }
+  }
+  else {
+    ret <- ret + theme(axis.line = element_blank())
+  }
+  if (!ticks) {
+    ret <- ret + theme(axis.ticks = element_blank())
+    ret <- ret + theme(axis.ticks.x = element_blank())
+    ret <- ret + theme(axis.ticks.y = element_blank())
+  }
+  else {
+    ret <- ret + theme(axis.ticks = element_line(size = 0.15))
+    ret <- ret + theme(axis.ticks.x = element_line(size = 0.15))
+    ret <- ret + theme(axis.ticks.y = element_line(size = 0.15))
+    ret <- ret + theme(axis.ticks.length = grid::unit(5, "pt"))
+  }
+  xj <- switch(tolower(substr(axis_title_just, 1, 1)), b = 0, l = 0, m = 0.5, c = 0.5, r = 1, t = 1)
+  yj <- switch(tolower(substr(axis_title_just, 2, 2)), b = 0, l = 0, m = 0.5, c = 0.5, r = 1, t = 1)
+  ret <- ret + theme(axis.text.x = element_text(margin = margin(t = -10)))
+  ret <- ret + theme(axis.text.y = element_text(margin = margin(r = -10)))
+  ret <- ret + theme(axis.title = element_text(size = axis_title_size, family = axis_title_family, face="italic"))
+  ret <- ret + theme(axis.title.x = element_text(hjust = xj, size = axis_title_size, family = axis_title_family, face="italic"))
+  ret <- ret + theme(axis.title.y = element_text(hjust = yj, size = axis_title_size, family = axis_title_family, face="italic"))
+  ret <- ret + theme(strip.text = element_text(hjust = 0, size = strip_text_size, family = strip_text_family, face="plain"))
+  ret <- ret + theme(plot.title = element_text(hjust = 0, size = plot_title_size, margin = margin(b = plot_title_margin), family = plot_title_family, face="bold"))
+  ret <- ret + theme(plot.subtitle = element_text(hjust = 0, size = subtitle_size, margin = margin(b = subtitle_margin), family = subtitle_family, face="italic"))
+  ret <- ret + theme(plot.caption = element_text(hjust = 1, size = caption_size, margin = margin(t = caption_margin), family = caption_family, face="plain"))
+  ret
+}
+
+primary_col <- "#045babdd"
+secondary_col <- "#b7404cdd"
+
+loadfonts()
+```
+
+IMF Data for regression
+
+
+```r
+imf_iso2c <- c("CN", "US", "IN", "JP", "DE", "RU", "BR", "ID", "GB", "FR", "NA",
+               "MX", "IT", "KR", "SA", "ES", "CA", "TR", "IR", "AU", "NG", "TW", 
+               "TH", "PL", "EG", "PK", "AR", "MY", "NL", "PH", "ZA", "CO", "AE", 
+               "BD", "DZ", "VN", "IQ", "BE", "CH", "SG", "SE", "VE", "KZ", "CL", 
+               "RO", "HK", "AT", "PE", "NO", "UA", "QA", "CZ", "KW", "PT", "IL", 
+               "MM", "MA", "GR", "HU", "DK", "IE", "LK", "FI", "UZ", "AO", "EC", 
+               "AZ", "OM", "SD", "ET", "NZ", "SK", "BY", "DO", "KE", "TZ", "BG", 
+               "TN", "GT", "GH", "RS", "TM", "LY", "HR", "PA", "JO", "LB", "CI", 
+               "LT", "YE", "UG", "CR", "BO", "CM", "UY", "NP", "CD", "ZM", "BH", 
+               "SI", "AF", "PY", "LU", "KH", "SV", "LV", "TT", "HM", "BA", "LA", 
+               "EE", "SN", "BW", "MN", "MG", "MZ", "GE", "GA", "BN", "AL", "TD", 
+               "BF", "NI", "CG", "ML", "MK", "ZW", "CY", "AM", "GQ", "MU", "TV",
+               "JM", "TJ", "SS", "BJ", "RW", "PG", "MW", "KG", "NE", "HT", "MC", 
+               "MR", "GN", "IS", "MT", "TG", "SZ", "ME", "SL", "BS", "SR", "BI", 
+               "ER", "FJ", "TL", "BT", "GY", "LS", "MV", "BB", "LR", "CV", "GM", 
+               "DJ", "CF", "BZ", "GW", "SC", "AG", "LC", "SM", "GD", "KN", "VC", 
+               "KM", "SB", "WS", "DM", "VU", "ST", "TO", "FM", "PW", "KI", "MH")
+```
+
+This is the whittled down data set from the 3+GB file
+
+
+```r
+port_count_by_country <- read_feather("data/port_count_by_country.feather")
+port_count_by_country <- filter(port_count_by_country, cc %in% imf_iso2c)
+```
+
+The core idiom here is to:
+
+- extract the ports we will compare
+- visually compare the distributions
+- generate the fan plot
+
+# Web
+
+
+```r
+webby <- filter(port_count_by_country, port %in% c(80, 8000, 8080, 8888, 8081, 443, 8443))
+webby <- mutate(webby, encrypted=FALSE)
+webby <- mutate(webby, encrypted=ifelse(port %in% c(443, 8443), TRUE, FALSE))
+webby <- mutate(webby, port=factor(port, levels=c(443, 80, 8443, 8080, 8081, 8888)))
+
+webby_low <- filter(webby, port %in% c(80, 443))
+webby_low <- group_by(webby_low, cc) %>% mutate(pct=n/sum(n), tot=sum(n)) %>% ungroup()
+webby_low <- mutate(webby_low, pos=pct, pos=ifelse(encrypted, pct, -pct))
+webby_low <- arrange(webby_low, desc(pct))
+webby_uniq <- unique(filter(webby_low, pos<=0)$cc)
+webby_low <- mutate(webby_low, cc=factor(cc, levels=webby_uniq))
+webby_low <- filter(webby_low, !is.na(cc))
+webby_low <- mutate(webby_low, country_name=countrycode(cc, "iso2c", "country.name"))
+```
+
+
+```r
+gg <- ggplot(webby)
+gg <- gg + geom_boxplot(aes(x=port, y=n, group=port, fill=encrypted), width=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=100000000, label="Node count (log scale)"),
+                      family="Arial Narrow", fontface="italic", size=3, label.size=0, hjust=0)
+gg <- gg + scale_y_log10(expand=c(0,0.1), labels=comma, limits=c(NA, 150000000))
+gg <- gg + scale_fill_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Total distribution of encrypted and cleartext web ports",
+                subtitle="Each boxplot shows the distributions of the count of number of servers per country exposing that port",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.title.y=element_text(angle=0, vjust=0.9, hjust=0, margin=margin(r=-32)))
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_4_web_boxplot-1.png" width="864" />
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=webby_low, aes(y=0, yend=pos, x=cc, xend=cc, color=encrypted))
+
+tmp <- webby_low$pct[webby_low$port==80]
+webby_pct_50 <- which(abs(tmp-0.5)==min(abs(tmp-0.5)))
+gg <- gg + geom_vline(xintercept=webby_pct_50, size=0.25, color="#2b2b2b", alpha=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=webby_pct_50, y=0.9, label="50% mark"), 
+                      family="Arial Narrow", fontface="italic", size=3, hjust=0, nudge_x=0.5, label.size=0)
+
+gg <- gg + geom_label(data=data.frame(x=c(0,Inf), y=c(1, -1), lab=c("Encrypted", "Unencrypted"), 
+                                 hj=c(0, 1), yj=c(1, 0), encrypted=c(TRUE, FALSE)),
+                      aes(x=x, y=y, label=lab, color=encrypted, yjust=yj, hjust=hj), 
+                      family="Arial Narrow", fontface="bold", label.size=0)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=0.65, 
+                                             label="Countries at this end of the spectrum (more unencrypted systems %) include\nTanzania, Uzbekistan, Oman, Kuwait, Iran, Egypt, Indonesia, South Sudan, Lebanon & Bahrain"), 
+                      label.size=0, hjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=Inf, y=-0.9,
+                                             label="Countries at this end of the spectrum (more encrypted systems %) include\nZambia, Monaco, Poland, Libya, El Salvador, Panama, Slovenia, Guyana, Italy & Suriname"),
+                      label.size=0, hjust=1, vjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + scale_y_continuous(labels=c("100%", "50%", "0%", "50%", "100%"))
+gg <- gg + scale_color_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Percentage of encrypted & non-encrypted web-oriented systems (ports 80 & 443)",
+                subtitle="Each column is a single country with the % of encrypted web-oriented systems above the y-axis\nand the % of unencrypted web-oriented systems below the x-axis.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_5_web_rank_chart-1.png" width="960" />
+
+
+```r
+webby_tab <- add_rownames(data.frame(filter(webby_low, port==80)), var="rank")
+webby_tab <- mutate(webby_tab, count=comma(n), percent=percent(pct), total=comma(tot))
+webby_tab <- select(webby_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+kable(slice(webby_tab, c(1:10, 176:185)), n=20)
+```
+
+
+
+Rank   Country                      
+-----  -----------------------------
+1      Tanzania, United Republic of 
+2      Uzbekistan                   
+3      Oman                         
+4      Kuwait                       
+5      Iran, Islamic Republic of    
+6      Egypt                        
+7      Indonesia                    
+8      South Sudan                  
+9      Lebanon                      
+10     Bahrain                      
+176    Zambia                       
+177    Monaco                       
+178    Poland                       
+179    Libya                        
+180    El Salvador                  
+181    Panama                       
+182    Slovenia                     
+183    Guyana                       
+184    Italy                        
+185    Suriname                     
+
+# ssh & telnet
+
+
+```r
+quiet <- filter(port_count_by_country, port %in% c(22, 23))
+quiet <- mutate(quiet, encrypted=FALSE)
+quiet <- mutate(quiet, encrypted=ifelse(port==22, TRUE, FALSE))
+
+quiet_rank <- ungroup(mutate(group_by(quiet, cc), pct=n/sum(n), tot=sum(n)))
+quiet_rank <- mutate(quiet_rank, pos=pct, pos=ifelse(encrypted, pct, -pct))
+quiet_rank <- arrange(quiet_rank, desc(pct))
+quiet_uniq <- unique(filter(quiet_rank, pos<=0)$cc)
+quiet_rank <- mutate(quiet_rank, cc=factor(cc, levels=quiet_uniq))
+quiet_rank <- filter(quiet_rank, !is.na(cc))
+quiet_rank <- mutate(quiet_rank, country_name=countrycode(cc, "iso2c", "country.name"))
+```
+
+
+```r
+quiet_plot <- quiet
+quiet_plot$port <- factor(quiet_plot$port, levels=c(1, 2, 22, 23, 4, 5))
+gg <- ggplot(quiet_plot)
+gg <- gg + geom_boxplot(aes(x=port, y=n, group=port, fill=encrypted), width=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=10000000, label="Node count (log scale)"),
+                      family="Arial Narrow", fontface="italic", size=3, label.size=0, hjust=0)
+gg <- gg + scale_x_discrete(drop=FALSE, breaks=c(1, 2, 22, 23, 4, 5), labels=c("", "", 22, 23, "", ""))
+gg <- gg + scale_y_log10(expand=c(0,0.07), labels=comma, limits=c(NA, 50000000))
+gg <- gg + scale_fill_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Total distribution of exposed ssh & telnet services",
+                subtitle="Each boxplot shows the distributions of the count of number of servers per country\nexposing that port",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.title.y=element_text(angle=0, vjust=0.95, hjust=0, margin=margin(r=-36)))
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_6_ssh_boxplot-1.png" width="864" />
+
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=quiet_rank, aes(y=0, yend=pos, x=cc, xend=cc, color=encrypted))
+
+tmp <- quiet_rank$pct[quiet_rank$port==23]
+quiet_pct_50 <- which(abs(tmp-0.5)==min(abs(tmp-0.5)))
+gg <- gg + geom_vline(xintercept=quiet_pct_50, size=0.25, color="#2b2b2b", alpha=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=quiet_pct_50, y=0.9, label="50% mark"), 
+                      family="Arial Narrow", fontface="italic", size=3, hjust=0, nudge_x=0.5, label.size=0)
+
+gg <- gg + geom_label(data=data.frame(x=c(0,Inf), y=c(1, -1), lab=c("Encrypted", "Unencrypted"), 
+                                 hj=c(0, 1), yj=c(1, 0), encrypted=c(TRUE, FALSE)),
+                      aes(x=x, y=y, label=lab, color=encrypted, yjust=yj, hjust=hj), 
+                      family="Arial Narrow", fontface="bold", label.size=0)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=0.72,
+                                             label="Countries at this end of the spectrum (more unencrypted systems %) include\nSudan, Jordan, Guatemala, Viet Nam, Korea, El Salvador,\nthe Dominican Republic, Yemen, Equador & Eritrea"),
+                      label.size=0, hjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=Inf, y=-0.85,
+                                             label="Countries at this end of the spectrum (more encrypted systems %) include\nLuxembourg, Switzerland, Lithuania, Ireland, Estonia, Netherlands,\nUnited Arab Emirates & Germany"),
+                      label.size=0, hjust=1, vjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + scale_y_continuous(labels=c("100%", "50%", "0%", "50%", "100%"))
+gg <- gg + scale_color_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Percentage of encrypted (port 22) and unencrypted (port 23) systems",
+                subtitle="Each column is a single country with the % of encrypted systems above the y-axis\nand the % of unencrypted systems below the x-axis.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+
+```r
+quiet_tab <- add_rownames(data.frame(filter(quiet_rank, port==23)), var="rank")
+quiet_tab <- mutate(quiet_tab, count=comma(n), percent=percent(pct), total=comma(tot))
+quiet_tab <- select(quiet_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+kable(slice(quiet_tab, c(1:10, 175:184)), n=20)
+```
+
+
+
+Rank   Country              
+-----  ---------------------
+1      Sudan                
+2      Jordan               
+3      Guatemala            
+4      Viet Nam             
+5      Korea, Republic of   
+6      El Salvador          
+7      Dominican Republic   
+8      Yemen                
+9      Ecuador              
+10     Eritrea              
+175    Bulgaria             
+176    Singapore            
+177    Luxembourg           
+178    Switzerland          
+179    Lithuania            
+180    Ireland              
+181    Estonia              
+182    Netherlands          
+183    United Arab Emirates 
+184    Germany              
+
+# Mail
+
+
+```r
+mail <- filter(port_count_by_country, port %in% c(25, 110, 143, 465, 995, 993))
+mail <- mutate(mail, encrypted=FALSE)
+mail <- mutate(mail, encrypted=ifelse(port %in% c(465, 995, 993), TRUE, FALSE))
+mail <- mutate(mail, port=factor(port, levels=c(25, 465, 110, 995, 143, 993)))
+
+smtp <- filter(mail, port %in% c(25, 465)) %>%  group_by(cc) %>% mutate(pct=n/sum(n), tot=sum(n)) %>% ungroup()
+smtp <- mutate(smtp, pos=pct, pos=ifelse(encrypted, pct, -pct))
+smtp <- arrange(smtp, desc(pct))
+smtp_uniq <- unique(filter(smtp, pos<=0)$cc)
+smtp <- mutate(smtp, cc=factor(cc, levels=smtp_uniq))
+smtp <- filter(smtp, !is.na(cc))
+smtp <- mutate(smtp, country_name=countrycode(cc, "iso2c", "country.name"))
+
+pop <- filter(mail, port %in% c(110, 995)) %>%  group_by(cc) %>% mutate(pct=n/sum(n), tot=sum(n)) %>% ungroup()
+pop <- mutate(pop, pos=pct, pos=ifelse(encrypted, pct, -pct))
+pop <- arrange(pop, desc(pct))
+pop_uniq <- unique(filter(pop, pos<=0)$cc)
+pop <- mutate(pop, cc=factor(cc, levels=pop_uniq))
+pop <- filter(pop, !is.na(cc))
+pop <- mutate(pop, country_name=countrycode(cc, "iso2c", "country.name"))
+
+imap <- filter(mail, port %in% c(143, 993)) %>%  group_by(cc) %>% mutate(pct=n/sum(n), tot=sum(n)) %>% ungroup()
+imap <- mutate(imap, pos=pct, pos=ifelse(encrypted, pct, -pct))
+imap <- arrange(imap, desc(pct))
+imap_uniq <- unique(filter(imap, pos<=0)$cc)
+imap <- mutate(imap, cc=factor(cc, levels=imap_uniq))
+imap <- filter(imap, !is.na(cc))
+imap <- mutate(imap, country_name=countrycode(cc, "iso2c", "country.name"))
+```
+
+
+```r
+gg <- ggplot(mail)
+gg <- gg + geom_boxplot(aes(x=port, y=n, group=port, fill=encrypted), width=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=10000000, label="Node count (log scale)"),
+                      family="Arial Narrow", fontface="italic", size=3, label.size=0, hjust=0)
+gg <- gg + scale_y_log10(expand=c(0,0.06), labels=comma, limits=c(NA, 50000000))
+gg <- gg + scale_fill_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Total distribution of exposed mail-oriented services",
+                subtitle="Each boxplot shows the distributions of the count of number of servers per country exposing that port",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.title.y=element_text(angle=0, vjust=0.95, hjust=0, margin=margin(r=-36)))
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_7_mail_boxplot-1.png" width="864" />
+
+## Mail: SMTP
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=smtp, aes(y=0, yend=pos, x=cc, xend=cc, color=encrypted))
+
+tmp <- smtp$pct[smtp$port==25]
+smtp_pct_50 <- which(abs(tmp-0.5)==min(abs(tmp-0.5)))
+gg <- gg + geom_vline(xintercept=smtp_pct_50, size=0.25, color="#2b2b2b", alpha=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=smtp_pct_50, y=0.9, label="50% mark"), 
+                      family="Arial Narrow", fontface="italic", size=3, hjust=1, nudge_x=-0.5, label.size=0)
+
+gg <- gg + geom_label(data=data.frame(x=c(0,Inf), y=c(1, -1), lab=c("Encrypted", "Unencrypted"), 
+                                 hj=c(0, 1), yj=c(1, 0), encrypted=c(TRUE, FALSE)),
+                      aes(x=x, y=y, label=lab, color=encrypted, yjust=yj, hjust=hj), 
+                      family="Arial Narrow", fontface="bold", label.size=0)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=0.45,
+                                             label="Countries at this end of the spectrum (more unencrypted systems %) include\nGuinea-Bissau, South Sudan, Chat, Comoros, Palau, Kiribati,\nNauru, the United Arab Emirates & Egypt"),
+                      label.size=0, hjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=Inf, y=-0.95,
+                                             label="Countries at this end of the spectrum (more encrypted systems %) include\nBelgium, Qatar, the Dominican Republic, Gabon, Tajikistan& Congo"),
+                      label.size=0, hjust=1, vjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + scale_y_continuous(labels=c("100%", "50%", "0%", "50%", "100%"))
+gg <- gg + scale_color_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Percentage of encrypted (port 465) and unencrypted (port 25) mail systems",
+                subtitle="Each column is a single country with the % of encrypted systems above the y-axis\nand the % of unencrypted systems below the x-axis.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_8_smtp_rank_chart-1.png" width="960" />
+
+
+```r
+smtp_tab <- add_rownames(data.frame(filter(smtp, port==25)), var="rank")
+smtp_tab <- mutate(smtp_tab, count=comma(n), percent=percent(pct), total=comma(tot))
+smtp_tab <- select(smtp_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+kable(slice(smtp_tab, c(1:10, 175:185)), n=20)
+```
+
+
+
+Rank   Country               
+-----  ----------------------
+1      Guinea-Bissau         
+2      South Sudan           
+3      Chad                  
+4      Sao Tome and Principe 
+5      Comoros               
+6      Palau                 
+7      Kiribati              
+8      United Arab Emirates  
+9      Egypt                 
+10     Guatemala             
+175    Poland                
+176    Samoa                 
+177    Belgium               
+178    Qatar                 
+179    Dominican Republic    
+180    Gabon                 
+181    Tajikistan            
+182    Zimbabwe              
+183    Mozambique            
+184    Maldives              
+185    Congo                 
+
+**NOTE** Neither Tokelau, Pitcairn expose `smtp`
+
+## Mail: POP
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=pop, aes(y=0, yend=pos, x=cc, xend=cc, color=encrypted))
+
+tmp <- imap$pct[imap$port==143]
+pop_pct_50 <- which(abs(tmp-0.5)==min(abs(tmp-0.5)))[1]
+gg <- gg + geom_vline(xintercept=pop_pct_50, size=0.25, color="#2b2b2b", alpha=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=pop_pct_50, y=0.9, label="50% mark"), 
+                      family="Arial Narrow", fontface="italic", size=3, hjust=0, nudge_x=0.5, label.size=0)
+
+gg <- gg + geom_label(data=data.frame(x=c(0,Inf), y=c(1, -1), lab=c("Encrypted", "Unencrypted"), 
+                                 hj=c(0, 1), yj=c(1, 0), encrypted=c(TRUE, FALSE)),
+                      aes(x=x, y=y, label=lab, color=encrypted, yjust=yj, hjust=hj), 
+                      family="Arial Narrow", fontface="bold", label.size=0)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=0.65,
+                                             label="Countries at this end of the spectrum (more unencrypted systems %) include\nLesotho, Afghanistan, Mexico, Switzerland, Botswana, Kiribati, Cameroon, Jordan, Gambia & Comoros"),
+                      label.size=0, hjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=Inf, y=-0.90,
+                                             label="Countries at this end of the spectrum (more encrypted systems %) include\nGabon, Dominica, Yemen, Guinea-Bissau, Chad, Oman, Micronesia, Nauru, Congo & the Maldives"),
+                      label.size=0, hjust=1, vjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + scale_y_continuous(labels=c("100%", "50%", "0%", "50%", "100%"))
+gg <- gg + scale_color_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Percentage of encrypted (port 995) and unencrypted (port 110) mail access (POP) systems",
+                subtitle="Each column is a single country with the % of encrypted systems above the y-axis\nand the % of unencrypted systems below the x-axis.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_9_pop_rank_chart-1.png" width="960" />
+
+
+```r
+pop_tab <- add_rownames(data.frame(filter(pop, port==110)), var="rank")
+pop_tab <- mutate(pop_tab, count=comma(n), percent=percent(pct), total=comma(tot))
+pop_tab <- select(pop_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+kable(slice(pop_tab, c(1:10, 175:185)), n=20)
+```
+
+
+
+Rank   Country                         
+-----  --------------------------------
+1      Lesotho                         
+2      Afghanistan                     
+3      Mexico                          
+4      Swaziland                       
+5      Botswana                        
+6      Turkmenistan                    
+7      Kiribati                        
+8      Cameroon                        
+9      Jordan                          
+10     Gambia                          
+175    Slovakia                        
+176    Iraq                            
+177    Gabon                           
+178    Dominica                        
+179    Yemen                           
+180    Guinea-Bissau                   
+181    Chad                            
+182    Oman                            
+183    Micronesia, Federated States of 
+184    Congo                           
+185    Maldives                        
+
+## Mail: IMAP
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=imap, aes(y=0, yend=pos, x=cc, xend=cc, color=encrypted))
+
+tmp <- imap$pct[imap$port==110]
+imap_pct_50 <- which(abs(tmp-0.5)==min(abs(tmp-0.5)))[1]
+gg <- gg + geom_vline(xintercept=pop_pct_50, size=0.25, color="#2b2b2b", alpha=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=pop_pct_50, y=0.9, label="50% mark"), 
+                      family="Arial Narrow", fontface="italic", size=3, hjust=0, nudge_x=0.5, label.size=0)
+
+gg <- gg + geom_label(data=data.frame(x=c(0,Inf), y=c(1, -1), lab=c("Encrypted", "Unencrypted"), 
+                                 hj=c(0, 1), yj=c(1, 0), encrypted=c(TRUE, FALSE)),
+                      aes(x=x, y=y, label=lab, color=encrypted, yjust=yj, hjust=hj), 
+                      family="Arial Narrow", fontface="bold", label.size=0)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=0.65,
+                                             label="Countries at this end of the spectrum (more unencrypted systems %) include\nLesotho, South Sudan, Mexico, Jordan, Botswana, North Korea, Angola, Costa Rica, Canada & Gambia"),
+                      label.size=0, hjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=Inf, y=-0.90,
+                                             label="Countries at this end of the spectrum (more encrypted systems %) include\nYemen, Ethiopia, Gabon, Slovakia, Iceland, the Solomon Islands, Oman, Dominica & Chad"),
+                      label.size=0, hjust=1, vjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + scale_y_continuous(labels=c("100%", "50%", "0%", "50%", "100%"))
+gg <- gg + scale_color_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Percentage of encrypted (port 993) and unencrypted (port 143) mail access (IMAP) systems",
+                subtitle="Each column is a single country with the % of encrypted systems above the y-axis\nand the % of unencrypted systems below the x-axis.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_10_imap_rank_chart-1.png" width="960" />
+
+
+```r
+imap_tab <- add_rownames(data.frame(filter(imap, port==143)), var="rank")
+imap_tab <- mutate(imap_tab, count=comma(n), percent=percent(pct), total=comma(tot))
+imap_tab <- select(imap_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+kable(slice(imap_tab, c(1:10, 175:185)), n=20)
+```
+
+
+
+Rank   Country            
+-----  -------------------
+1      Lesotho            
+2      South Sudan        
+3      Mexico             
+4      Jordan             
+5      Botswana           
+6      Korea, Republic of 
+7      Angola             
+8      Costa Rica         
+9      Canada             
+10     Gambia             
+175    Montenegro         
+176    Yemen              
+177    Ethiopia           
+178    Gabon              
+179    Slovakia           
+180    Iceland            
+181    Solomon Islands    
+182    Oman               
+183    Dominica           
+184    Chad               
+
+# Database
+
+
+```r
+sql <- filter(port_count_by_country, port %in% c(1433, 3306))
+sql <- mutate(sql, above=FALSE)
+sql <- mutate(sql, above=ifelse(port==3306, TRUE, FALSE))
+
+sql_rank <- group_by(sql, cc) %>% mutate(pct=n/sum(n), tot=sum(n)) %>% ungroup()
+sql_rank <- mutate(sql_rank, pos=pct, pos=ifelse(above, pct, -pct))
+sql_rank <- arrange(sql_rank, desc(pct))
+sql_uniq <- unique(filter(sql_rank, pos<=0)$cc)
+sql_rank <- mutate(sql_rank, cc=factor(cc, levels=sql_uniq))
+sql_rank <- filter(sql_rank, !is.na(cc))
+sql_rank <- mutate(sql_rank, country_name=countrycode(cc, "iso2c", "country.name"))
+```
+
+
+```r
+sql_plot <- sql
+sql_plot$port <- factor(sql_plot$port, levels=c(1, 2, 1433, 3306, 4, 5))
+gg <- ggplot(sql_plot)
+gg <- gg + geom_boxplot(aes(x=port, y=n, group=port), fill=primary_col, width=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=10000000, label="Node count (log scale)"),
+                      family="Arial Narrow", fontface="italic", size=3, label.size=0, hjust=0)
+gg <- gg + scale_x_discrete(drop=FALSE, breaks=c(1, 2, 1433, 3306, 4, 5), labels=c("", "", 1433, 3306, "", ""))
+gg <- gg + scale_y_log10(expand=c(0,0.06), labels=comma, limits=c(NA, 50000000))
+gg <- gg + scale_fill_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Total distribution of exposed database services",
+                subtitle="Each boxplot shows the distributions of the count of number of servers per country exposing that port",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.title.y=element_text(angle=0, vjust=0.95, hjust=0, margin=margin(r=-36)))
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+#gg
+```
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=sql_rank, aes(y=0, yend=pos, x=cc, xend=cc, color=above))
+
+tmp <- sql_rank$pct[sql_rank$port==1433]
+sql_pct_50 <- which(abs(tmp-0.5)==min(abs(tmp-0.5)))[1]
+gg <- gg + geom_vline(xintercept=sql_pct_50, size=0.25, color="#2b2b2b", alpha=0.5)
+gg <- gg + geom_label(data=data.frame(), aes(x=sql_pct_50, y=0.9, label="50% mark"), 
+                      family="Arial Narrow", fontface="italic", size=3, hjust=0, nudge_x=0.5, label.size=0)
+
+gg <- gg + geom_label(data=data.frame(x=c(0,Inf), y=c(1, -1),  lab=c("MySQL", "SQL Server"),
+                                 hj=c(0, 1), yj=c(1, 0), encrypted=c(TRUE, FALSE)),
+                      aes(x=x, y=y, label=lab, color=encrypted, yjust=yj, hjust=hj), 
+                      family="Arial Narrow", fontface="bold", label.size=0)
+gg <- gg + scale_y_continuous(labels=c("100%", "50%", "0%", "50%", "100%"))
+gg <- gg + scale_color_manual(values=c(primary_col, secondary_col))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Percentage of SQL Server (port 1433) & MySQL (3306) systems in-country",
+                subtitle="Each column is a single country with the % of SQL Server systems above the y-axis\nand the % of MySQL systems below the x-axis.")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+#gg
+```
+
+
+```r
+sql_tab <- add_rownames(data.frame(filter(sql_rank, port==1433)), var="rank")
+sql_tab <- mutate(sql_tab, count=comma(n), percent=percent(pct), total=comma(tot))
+sql_tab <- select(sql_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+#kable(slice(sql_tab, c(1:10, 175:185)), n=20)
+```
+
+
+```r
+ms <- tbl_df(ungroup(filter(port_count_by_country, port %in% c(135, 139, 445))))
+
+msbad <- tbl_df(ungroup(filter(port_count_by_country, port %in% c(135, 139, 445))))
+arrange(msbad, cc, port) %>%
+  group_by(cc) %>%
+  mutate(pct=n/sum(n),
+         end=cumsum(pct),
+         start=lag(pct),
+         start=ifelse(is.na(start), 0, start),
+         start=cumsum(start)) %>% 
+  ungroup() -> msbad
+
+msordr <- arrange(filter(msbad, port==445), desc(pct))
+msbad <- mutate(msbad, cc=factor(cc, levels=msordr$cc))
+msbad <- filter(msbad, !is.na(cc))
+
+msbad2 <- tbl_df(ungroup(filter(port_count_by_country, port %in% c(135, 139, 445))))
+arrange(msbad2, cc, port) %>%
+  group_by(cc) %>%
+  mutate(end=cumsum(n),
+         start=lag(n),
+         start=ifelse(is.na(start), 1L, start),
+         start=cumsum(start)) %>% 
+  ungroup() -> msbad2
+
+msordr2 <- arrange(count(rename(msbad2, orig_n=n), cc, wt=orig_n), desc(n))
+msbad2 <- mutate(msbad2, cc=factor(cc, levels=msordr2$cc))
+msbad2 <- arrange(msbad2, cc)
+msbad2 <- filter(msbad2, !is.na(cc))
+msbad2 <- mutate(msbad2, country_name=countrycode(cc, "iso2c", "country.name"))
+```
+
+
+```r
+ms_plot <- ms
+ms_plot$port <- factor(ms_plot$port, levels=c(1, 135, 139, 445, 4, 5))
+gg <- ggplot(ms_plot)
+gg <- gg + geom_boxplot(aes(x=port, y=n, group=port, fill=encrypted), width=0.5, fill=primary_col)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=10000000, label="Node count (log scale)"),
+                      family="Arial Narrow", fontface="italic", size=3, label.size=0, hjust=0)
+gg <- gg + scale_x_discrete(drop=FALSE, breaks=c(1, 135, 139, 445, 4, 5), labels=c("", 135, 139, 445, "", ""))
+gg <- gg + scale_y_log10(expand=c(0,0.06), labels=comma, limits=c(NA, 50000000))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Total distribution of exposed Microsoft services",
+                subtitle="Each boxplot shows the distributions of the count of number of servers per country exposing that port",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="Y")
+gg <- gg + theme(legend.position="none")
+gg <- gg + theme(axis.title.y=element_text(angle=0, vjust=0.95, hjust=0, margin=margin(r=-36)))
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_11_ms_boxplot-1.png" width="864" />
+
+
+```r
+gg <- ggplot(msbad)
+gg <- gg + geom_segment(aes(x=cc, xend=cc, y=start, yend=end, group=port, color=port), size=1.75)
+gg <- gg + scale_y_continuous(expand=c(0,0), label=percent)
+gg <- gg + scale_color_manual(name="Port", values=c("#0094d1", "#045bab", "#8dc63f"))
+gg <- gg + labs(x="Percentage of each port prevalence within each region, ordred by port 445 prevalence", y=NULL,
+                title="The Three (Microsoft) Amigos (Act I)",
+                subtitle="In theory, we should see ports 135 & 139 working in tandem more often than not as they (together) service 'NBT over IP' while 445 is generally\nself-sufficient. We can see from this chart that these port-configurations are far from uniform across all the regions.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="")
+gg <- gg + theme(legend.position="bottom")
+gg <- gg + theme(axis.title.x=element_text(hjust=0, margin=margin(t=-6)))
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(axis.text.y=element_text(vjust=c(0, 0.5, 0.5, 0.5, 1)))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_12_ms_amigos_1-1.png" width="960" />
+
+
+```r
+gg <- ggplot()
+gg <- gg + geom_segment(data=msbad2, aes(x=cc, xend=cc, y=start, yend=end, group=port, color=port), size=1)
+gg <- gg + geom_label(data=data.frame(), aes(x=30, y=500000,
+                                             label="Countries to the left (more exposure) include the U.S, China, Belgium, Australia, the Russian Federation,\nJapan, France, Taiwan, Honk Kong and the U.K."),
+                      label.size=0, hjust=0, family="Arial Narrow", fontface="italic", size=3.5)
+gg <- gg + scale_y_log10(expand=c(0,0), label=comma)
+gg <- gg + scale_color_manual(name="Port", values=c("#0094d1", "#045bab", "#8dc63f"))
+gg <- gg + labs(x="Ordered by cumulative sum of Microsoft ports within each region; Note the log scale on the y-axis", y=NULL,
+                title="The Three (Microsoft) Amigos (Act II)",
+                subtitle="In theory, we should see ports 135 & 139 working in tandem more often than not as they (together) service 'NBT over IP' while 445 is generally\nself-sufficient. We can see from this chart that these port-configurations are far from uniform across all the regions.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="")
+gg <- gg + theme(legend.position="bottom")
+gg <- gg + theme(axis.title.x=element_text(hjust=0, margin=margin(t=-6)))
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(axis.text.y=element_text(vjust=c(0, 0.5, 0.5, 0.5, 1)))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_13_ms_amigos_2-1.png" width="960" />
+
+
+```r
+ms_tab <- add_rownames(data.frame(filter(msbad2, port==135)), var="rank")
+ms_tab <- select(ms_tab, `Rank`=rank, `Country`=country_name)#, `Port`=port, `Count`=count, `%`=percent, Total=total)
+kable(slice(ms_tab, c(1:10, 175:185)), n=20)
+```
+
+
+
+Rank   Country                   
+-----  --------------------------
+1      United States             
+2      China                     
+3      Belgium                   
+4      Australia                 
+5      Russian Federation        
+6      Japan                     
+7      France                    
+8      Taiwan, Province of China 
+9      Hong Kong                 
+10     United Kingdom            
+175    Eritrea                   
+176    Chad                      
+177    Central African Republic  
+178    Marshall Islands          
+179    Sao Tome and Principe     
+180    Guinea                    
+181    Kiribati                  
+182    Tonga                     
+183    Tuvalu                    
+184    Bhutan                    
+185    Timor-Leste               
+
+
+```r
+heat <- jsonlite::fromJSON("data/exposed.json")
+```
+
+# Heatmaps
+
+
+```r
+cum_port <- read_feather("data/cum_port.feather")
+port_ann <- data.frame(x=c(0, 30.85, 2, 3.05, 4.08),
+                       y=c(1, 0.025, 0.5412370, 0.7813847, 0.8530143),
+                       lab=c("Total nodes from our scan", "# ports running on a server", 
+                             "← 54% of nodes expose only a single port", "← 78% of nodes expose 2 or fewer ports",
+                             "← 85% of nodes expose 3 or fewer ports"),
+                       hj=c(0, 1, 0, 0, 0),
+                       vj=c(0.5, 0.5, 0.5, 0.5, 0.5),
+                       fc=c("italic", "italic", "plain", "plain", "plain"),
+                       fill=c("white", "#d9480101","#d9480101", "#d9480101", "#d9480101"))
+
+gg <- ggplot()
+gg <- gg + geom_area(data=cum_port, aes(x=x, y=y, group=1), color="#0094d1", fill="#0094d1", alpha=0.25)
+gg <- gg + geom_label(data=port_ann, aes(x=x, y=y, label=lab, hjust=hj, vjust=vj, fill=fill, fontface=fc),
+                     family="Arial Narrow", size=3, label.size=0)
+gg <- gg + scale_x_discrete(name=NULL, expand=c(0,0))
+gg <- gg + scale_y_continuous(name=NULL, expand=c(0,0), labels=percent, limits=c(0, 1.01))
+gg <- gg + scale_fill_identity()
+gg <- gg + labs(title="Not Many Ports To Storm",
+                subtitle="Most nodes have three or fewer active ports. We don't 'double-dip' in this chart. That is, nodes that have 2 active ports\naren't counted in the 1-port category or the 3-port category.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="XY")
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_14_cum_port-1.png" width="960" />
+
+
+```r
+gg <- ggplot(heat, aes(x=x, y=y))
+gg <- gg + geom_tile(aes(fill=pct), color="#2b2b2b88", size=0.025)
+gg <- gg + scale_x_continuous(expand=c(0,0), breaks=1:max(heat$x))
+gg <- gg + scale_y_continuous(expand=c(0,0), breaks=c(1, 5, 10, 15, 20, 25, 30))
+gg <- gg + scale_fill_distiller(name="", palette="PuBuGn", direction=2, breaks=c(0, 0.25, 0.50, 0.75, 1), label=percent, na.value="#bdbdbd")
+gg <- gg + coord_fixed(ratio = 2/1)
+gg <- gg + guides(fill=guide_colorbar(nbin=5, barwidth=unit(200, "pt")))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Exposed port combinations per country",
+                subtitle="Countries are ranked across the bottom by how many port combinations they expose. Tiles are filled by the percentage of total in-country exposed devices.\nGray tiles indicate no devices found with that number of ports.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="", subtitle_size=11, subtitle_margin=6)
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(axis.text.y=element_text(size=7))
+gg <- gg + theme(legend.position="bottom")
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_15_heat1-1.png" width="960" />
+
+
+```r
+gg <- ggplot(heat, aes(x=x, y=y))
+gg <- gg + geom_tile(aes(fill=ct), color="#2b2b2b88", size=0.025)
+gg <- gg + scale_x_continuous(expand=c(0,0), breaks=1:max(heat$x))
+gg <- gg + scale_y_continuous(expand=c(0,0), breaks=c(1, 5, 10, 15, 20, 25, 30))
+gg <- gg + scale_fill_distiller(name="", palette="PuBuGn", direction=2, trans="log10", label=comma, na.value="#bdbdbd")
+gg <- gg + coord_fixed(ratio = 2/1)
+gg <- gg + guides(fill=guide_colorbar(nbin=5, barwidth=unit(200, "pt")))
+gg <- gg + labs(x=NULL, y=NULL,
+                title="Exposed port combinations per country",
+                subtitle="Countries are ranked across the bottom by how many port combinations they expose. Tiles are filled by the total count exposed devices per port count.\nGray tiles indicate no devices found with that number of ports.",
+                caption="Source: Rapid7 Project Sonar Data")
+gg <- gg + theme_sane(grid="", subtitle_size=11, subtitle_margin=6)
+gg <- gg + theme(axis.text.x=element_blank())
+gg <- gg + theme(axis.text.y=element_text(size=7))
+gg <- gg + theme(legend.position="bottom")
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_16_heat2-1.png" width="960" />
+
+# Models
+
+CAIDA /24 (by country) population vs IMF GDP
+
+## CAIDA
+
+
+```r
+caida <- read.csv("data/caida_model")
+gg <- ggplot(caida, aes(gdp, total)) 
+gg <- gg + geom_text(data=filter(caida, gdp>6000), aes(x=gdp, y=total, label=country), 
+                     hjust=1, nudge_x=-150, family="Arial Narrow", size=3)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=50000000, label="Total country node count"),
+                      hjust=0, vjust=1, family="Arial Narrow", fontface="italic", label.size=0, size=3)
+gg <- gg + geom_label(data=data.frame(), aes(x=Inf, y=1, label="GDP (USD, billions)"),
+                      hjust=1, vjust=0, family="Arial Narrow", fontface="italic", label.size=0, size=3)
+gg <- gg + geom_smooth(color="#e95823", fill="#bdbdbd", se=TRUE, method = "lm")
+gg <- gg + geom_point(color="#2b2b2b")
+gg <- gg + scale_x_continuous(expand=c(0,0), labels=comma, limits=c(0, 23000))
+gg <- gg + scale_y_continuous(expand=c(0,0), labels=comma, limits=c(0, 50000000)) 
+gg <- gg + labs(x=NULL, y=NULL, title="The relationship between GDP and internet node count")
+gg <- gg + theme_sane(grid="XY", axis="xy")
+gg <- gg + theme(plot.margin=margin(10, 10, 10, 10))
+gg
+```
+
+<img src="national-exposure_files/figure-html/fig_1_1_caida-1.png" width="960" />
+
+# GDP vs Exposure
+
+While there's no correlation whatsoever between GDP and the exposure rank, this is easier on the eyes than a table.
+
+
+```r
+df <- structure(list(exp_rank = 1:50, place = c("Belgium", "Tajikistan", 
+"Samoa", "Australia", "China", "Hong Kong", "Dominican Republic", 
+"Afghanistan", "South Africa", "Ethiopia", "Kenya", "Gabon", 
+"France", "United States", "Mozambique", "Japan", "Qatar", "Yemen", 
+"Russian Federation", "Argentina", "Maldives", "Azerbaijan", 
+"United Kingdom", "Turkmenistan", "Algeria", "Korea, Republic of", 
+"Peru", "Nigeria", "Turkey", "Hungary", "Malaysia", "Congo", 
+"Taiwan, Province of China", "Czech Republic", "Bahamas", "Latvia", 
+"Ukraine", "Slovenia", "Austria", "Croatia", "Denmark", "Luxembourg", 
+"Israel", "Macedonia, the former Yugoslav Republic of", "Pakistan", 
+"Cyprus", "Germany", "Switzerland", "Singapore", "Viet Nam"), 
+    code = c("BE", "TJ", "WS", "AU", "CN", "HK", "DO", "AF", 
+    "ZA", "ET", "KE", "GA", "FR", "US", "MZ", "JP", "QA", "YE", 
+    "RU", "AR", "MV", "AZ", "GB", "TM", "DZ", "KR", "PE", "NG", 
+    "TR", "HU", "MY", "CG", "TW", "CZ", "BS", "LV", "UA", "SI", 
+    "AT", "HR", "DK", "LU", "IL", "MK", "PK", "CY", "DE", "CH", 
+    "SG", "VN"), gdp = c("507.763", "24.38", "1.062", "1,183.26", 
+    "20,985.63", "430.679", "156.037", "65.295", "742.461", "174.16", 
+    "154.595", "36.537", "2,717.52", "18,697.92", "36.925", "4,949.22", 
+    "344.246", "85.284", "3,493.04", "968.476", "4.935", "180.861", 
+    "2,751.48", "99.47", "599.829", "1,930.48", "402.818", "1,166.41", 
+    "1,641.00", "266.581", "860.231", "31.157", "1,156.44", "343.931", 
+    "9.551", "52.162", "352.339", "65.521", "415.054", "92.309", 
+    "265.302", "59.181", "294.415", "30.17", "984.205", "28.642", 
+    "3,948.83", "494.812", "488.351", "593.509"), gdp_rank = c(37L, 
+    133L, 178L, 19L, 1L, 45L, 73L, 100L, 30L, 69L, 74L, 117L, 
+    10L, 2L, 115L, 4L, 50L, 89L, 6L, 26L, 160L, 66L, 9L, 81L, 
+    34L, 13L, 47L, 20L, 17L, 58L, 27L, 123L, 21L, 51L, 151L, 
+    105L, 49L, 99L, 46L, 83L, 59L, 102L, 54L, 125L, 25L, 127L, 
+    5L, 38L, 39L, 35L)), row.names = c(NA, -50L), .Names = c("exp_rank", 
+"place", "code", "gdp", "gdp_rank"), class = "data.frame")
+
+df$gdp <- as.numeric(gsub("[$,]", "", df$gdp))
+df$color <- cut(df$gdp_rank,  include.lowest=TRUE, breaks=c(1, 11, 26, 51, 100, 150, 188), 
+                labels=c("1-10", "11-25", "26-50", "51-100", "100-150", "150-188"))
+df$txtcol <- cut(df$gdp_rank,  include.lowest=TRUE, breaks=c(1, 11, 26, 51, 100, 150, 188), 
+                labels=c("a", "b", "c", "d", "e", "f"))
+df <- arrange(df, desc(exp_rank))
+df$exp_rank <- 1:50
+
+gg <- ggplot(df)
+gg <- gg + geom_label(aes(x=gdp, y=exp_rank, label=place, fill=color, color=txtcol), label.size=0, size=3, show.legend = FALSE)
+gg <- gg + geom_label(data=data.frame(), aes(x=0, y=51, label="Exposure Index Rank"), family="Arial Narrow", fontface="italic", hjust=0, size=3, label.size=0)
+gg <- gg + scale_x_log10(labels=dollar)
+gg <- gg + scale_y_continuous(expand=c(0, 0), breaks=c(0, 1, seq(10, 50, 10)), labels=c("", seq(50, 10, -10), 1), limits=c(0, 51.5))
+gg <- gg + scale_color_manual(name="", values=c(`a`="white", `b`="white", `c`="black", `d`="black", `e`="white", `f`="white"))
+gg <- gg + scale_fill_manual(name="GDP Rank", 
+                              values=c(`1-10`="#b7404c", `11-25`="#e95823", 
+                                       `26-50`="#f9a029", `51-100`="#8dc63f",
+                                       `100-150`="#0094d1", `150-188`="#045bab"))
+gg <- gg + labs(x="GDP (billions, $USD; log scale)", y=NULL,
+                title="GDP vs Exposure",
+                subtitle="A look at how the exposure ranking of a nation compares with its GDP. Labels are filled (red→blue) according to GDP quintile rank.",
+                caption="Source: Rapid7 Project Sonar Data & IMF GDP Data")
+gg <- gg + theme_sane(grid="XY", axis="xy")
+gg <- gg + theme(plot.margin=margin(10,10,10,10))
+gg <- gg + theme(axis.title.x=element_text(vjust=0, margin=margin(t=-6)))
+gg <- gg + theme(axis.text.y=element_text(vjust=c(0, rep(0.5, 5))))
+gg
+```
+
+<img src="national-exposure_files/figure-html/gdp_exp-1.png" width="960" />
+
+
+```r
+
+# keeping this here just to keep it with the graphics uncomment the last line to get the rank but it takes nearly an hour.
+
+order_port <- function(port_num) {
+  
+  total_country <- select(count(port_count_by_country, cc, wt=n), cc, total_cc=n)
+
+  df <- filter(port_count_by_country, port %in% c(port_num))
+  df <- left_join(df, total_country, by="cc")
+  df <- filter(df, port %in% c(port_num))
+  df <- mutate(ungroup(df), pct=n/total_cc)
+  df <- arrange(df, desc(pct))
+  df_uniq <- unique(df$cc)
+  df <- mutate(df, cc=factor(cc, levels=df_uniq))
+  df <- filter(df, !is.na(cc))
+  df <- mutate(df, country_name=countrycode(cc, "iso2c", "country.name"))
+  df
+  
+}
+
+web <- order_port(80)
+mysql <- order_port(3306)
+sqlsvr <- order_port(1433)
+smtp <- order_port(25)
+telnet <- order_port(23)
+pop <- order_port(110)
+imap <- order_port(143)
+ldap <- order_port(389)
+rdp <- order_port(3389)
+rfb <- order_port(5900)
+upnp <- order_port(5000)
+jetd <- order_port(9100)
+pptp <- order_port(1723)
+rpcbind <- order_port(111)
+nbss <- order_port(139)
+msrpc <- order_port(135)
+cifs <- order_port(445)
+
+cc_ordr <- list(web=levels(web$cc),
+                sqlsvr=levels(sqlsvr$cc),
+                mysql=levels(mysql$cc),
+                smtp=levels(smtp$cc),
+                pop=levels(pop$cc),
+                imap=levels(imap$cc),
+                ldap=levels(ldap$cc),
+                rdp=levels(rdp$cc),
+                rfb=levels(rfb$cc),
+                upnp=levels(upnp$cc),
+                jetd=levels(jetd$cc),
+                pptp=levels(pptp$cc),
+                rpcbind=levels(rpcbind$cc),
+                nbss=levels(nbss$cc),
+                msrpc=levels(msrpc$cc),
+                cifs=levels(cifs$cc),
+                agg=rev(distinct(heat, cc, total)$cc))
+
+common <- sort(Reduce(intersect, cc_ordr))
+rankmat <- matrix(unlist(lapply(cc_ordr, function(x) { x[x%in%common]})), byrow=TRUE, ncol=length(common))
+# uncomment this to do the ranking, but it takes nearly an hour
+# the importance vector coresponds to the weights assigned to the ports above
+#top_50 <- RankAggreg::RankAggreg(rankmat, 50, seed=1492, importance=c(1,3,3,1,2,2,3,4,4,3,1,1,3,3,4,4,5))
+```
+
+
+### the list
+
+
+```r
+df <- structure(list(exp_rank = 1:50, place = c("Belgium", "Tajikistan", 
+"Samoa", "Australia", "China", "Hong Kong", "Dominican Republic", 
+"Afghanistan", "South Africa", "Ethiopia", "Kenya", "Gabon", 
+"France", "United States", "Mozambique", "Japan", "Qatar", "Yemen", 
+"Russian Federation", "Argentina", "Maldives", "Azerbaijan", 
+"United Kingdom", "Turkmenistan", "Algeria", "Korea, Republic of", 
+"Peru", "Nigeria", "Turkey", "Hungary", "Malaysia", "Congo", 
+"Taiwan, Province of China", "Czech Republic", "Bahamas", "Latvia", 
+"Ukraine", "Slovenia", "Austria", "Croatia", "Denmark", "Luxembourg", 
+"Israel", "Macedonia, the former Yugoslav Republic of", "Pakistan", 
+"Cyprus", "Germany", "Switzerland", "Singapore", "Viet Nam"), 
+    code = c("BE", "TJ", "WS", "AU", "CN", "HK", "DO", "AF", 
+    "ZA", "ET", "KE", "GA", "FR", "US", "MZ", "JP", "QA", "YE", 
+    "RU", "AR", "MV", "AZ", "GB", "TM", "DZ", "KR", "PE", "NG", 
+    "TR", "HU", "MY", "CG", "TW", "CZ", "BS", "LV", "UA", "SI", 
+    "AT", "HR", "DK", "LU", "IL", "MK", "PK", "CY", "DE", "CH", 
+    "SG", "VN"), gdp = c("507.763", "24.38", "1.062", "1,183.26", 
+    "20,985.63", "430.679", "156.037", "65.295", "742.461", "174.16", 
+    "154.595", "36.537", "2,717.52", "18,697.92", "36.925", "4,949.22", 
+    "344.246", "85.284", "3,493.04", "968.476", "4.935", "180.861", 
+    "2,751.48", "99.47", "599.829", "1,930.48", "402.818", "1,166.41", 
+    "1,641.00", "266.581", "860.231", "31.157", "1,156.44", "343.931", 
+    "9.551", "52.162", "352.339", "65.521", "415.054", "92.309", 
+    "265.302", "59.181", "294.415", "30.17", "984.205", "28.642", 
+    "3,948.83", "494.812", "488.351", "593.509"), gdp_rank = c(37L, 
+    133L, 178L, 19L, 1L, 45L, 73L, 100L, 30L, 69L, 74L, 117L, 
+    10L, 2L, 115L, 4L, 50L, 89L, 6L, 26L, 160L, 66L, 9L, 81L, 
+    34L, 13L, 47L, 20L, 17L, 58L, 27L, 123L, 21L, 51L, 151L, 
+    105L, 49L, 99L, 46L, 83L, 59L, 102L, 54L, 125L, 25L, 127L, 
+    5L, 38L, 39L, 35L)), row.names = c(NA, -50L), .Names = c("exp_rank", 
+"place", "code", "gdp", "gdp_rank"), class = "data.frame")
+
+knitr::kable(arrange(select(df, `Exposure Rank`=exp_rank, `Country`=place), `Exposure Rank`))
+```
+
+
+
+ Exposure Rank  Country                                    
+--------------  -------------------------------------------
+             1  Belgium                                    
+             2  Tajikistan                                 
+             3  Samoa                                      
+             4  Australia                                  
+             5  China                                      
+             6  Hong Kong                                  
+             7  Dominican Republic                         
+             8  Afghanistan                                
+             9  South Africa                               
+            10  Ethiopia                                   
+            11  Kenya                                      
+            12  Gabon                                      
+            13  France                                     
+            14  United States                              
+            15  Mozambique                                 
+            16  Japan                                      
+            17  Qatar                                      
+            18  Yemen                                      
+            19  Russian Federation                         
+            20  Argentina                                  
+            21  Maldives                                   
+            22  Azerbaijan                                 
+            23  United Kingdom                             
+            24  Turkmenistan                               
+            25  Algeria                                    
+            26  Korea, Republic of                         
+            27  Peru                                       
+            28  Nigeria                                    
+            29  Turkey                                     
+            30  Hungary                                    
+            31  Malaysia                                   
+            32  Congo                                      
+            33  Taiwan, Province of China                  
+            34  Czech Republic                             
+            35  Bahamas                                    
+            36  Latvia                                     
+            37  Ukraine                                    
+            38  Slovenia                                   
+            39  Austria                                    
+            40  Croatia                                    
+            41  Denmark                                    
+            42  Luxembourg                                 
+            43  Israel                                     
+            44  Macedonia, the former Yugoslav Republic of 
+            45  Pakistan                                   
+            46  Cyprus                                     
+            47  Germany                                    
+            48  Switzerland                                
+            49  Singapore                                  
+            50  Viet Nam                                   
