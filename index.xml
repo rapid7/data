@@ -147,6 +147,10 @@ div#tabdiv {
   height:540px;
   overflow:auto;
 }
+
+th {
+    font-size:14pt;
+}
 &lt;/style&gt;
 
 &lt;p&gt;The default view is showing plaintext (HTTP) vs encrypted (HTTPS) nodes. The bars are sorted by regions with the worst unencrypted vs encrypted makeup to the best.&lt;/p&gt;
@@ -172,7 +176,7 @@ div#tabdiv {
  &lt;th&gt;Country&lt;/th&gt;
  &lt;th&gt;Total nodes&lt;/th&gt;
  &lt;th&gt;Unencrypted count&lt;/th&gt;
- &lt;th&gt;Unencrupted %&lt;/th&gt;
+ &lt;th&gt;Unencrypted %&lt;/th&gt;
  &lt;th&gt;Encrypted count&lt;/th&gt;
  &lt;th&gt;Encrypted %&lt;/th&gt;
  &lt;/tr&gt;
