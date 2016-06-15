@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Data Science @ Rapid7</title>
+    <link>http://data.labs.rapid7.com/post/</link>
+    <description>Recent content in Posts on Data Science @ Rapid7</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 15 Jun 2016 14:47:30 -0400</lastBuildDate>
+    <atom:link href="http://data.labs.rapid7.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Behind the National Exposure Index</title>
+      <link>http://data.labs.rapid7.com/post/national-exposure/</link>
+      <pubDate>Wed, 15 Jun 2016 14:47:30 -0400</pubDate>
+      
+      <guid>http://data.labs.rapid7.com/post/national-exposure/</guid>
+      <description>&lt;p&gt;Test&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
