@@ -20,15 +20,17 @@
         <meta name="twitter:domain" content="http://data.labs.rapid.com/">
         <meta property="og:site_name" content="Data Science @ Rapid7">
         <meta property="og:title" content="Data Science @ Rapid7">
-        <meta property="og:url" content="http://data.labs.rapid7.com/">
+        <meta property="og:url" content="http://data.labs.rapid7.com/post/natexp-portwars/">
         <meta property="og:description" content="">
     
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="Rapid7" />
+        <meta property="og:article:published_time" content="2016-06-15T14:47:30-04:00" />
     
         <meta name="generator" content="Hugo 0.16" />
-        <title>Data Science @ Rapid7 &middot; Data Science @ Rapid7 </title>
+        <title>National Exposure - Port Wars &middot; Data Science @ Rapid7 </title>
         <link rel="canonical" href="http://data.labs.rapid7.com" />
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="http://data.labs.rapid7.com/index.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
         <link rel="stylesheet" type='text/css' href="http://data.labs.rapid7.comcss/main.css"/>
         <script src="http://data.labs.rapid7.comjs/d3.3.5.17.min.js"/></script>
         <script src="http://data.labs.rapid7.comjs/d3-jetpack.js"/></script>
@@ -50,46 +52,104 @@
     </header>
 <main class="content" role="main">
 	<div class="container">
-	
-		<article class="li post">
-    <header class="post-header">
-        <h3 class="post-title"><a href="http://data.labs.rapid7.com/post/natexp-heatmap/">National Exposure - Port Explorer</a></h3>
-        <p class="post-time"><time datetime="2016-06-15T14:47:30-04:00">June 15, 2016</time></p>
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">National Exposure - Port Wars</h3>
     </header>
-    
-    <section class="post-excerpt">
-        <p><p>The heatmap below shows the &ldquo;services exposure&rdquo; for a given region. The rows of the heatmap are the number of ports exposed (starting with &ldquo;1&rdquo; at the bottom). Each column is a country and the color of each square is the percentage of devices within country that have that many ports exposed (red&#x2192;blue).</p>
-</p>
+
+    <section class="post-content">
+        <p>You can use this interactive visualization to explore the battle between encrypted &amp; unencrypted services.</p>
+
+<style>
+td {
+  font-size: 10pt;
+  text-align: right;
+}
+
+table.TF th {
+  text-align: center;
+}
+
+div#tabdiv {
+  margin-top:30px;
+  height:540px;
+  overflow:auto;
+}
+</style>
+
+<p>The default view is showing plaintext (HTTP) vs encrypted (HTTPS) nodes. The bars are sorted by regions with the worst unencrypted vs encrypted makeup to the best.</p>
+
+<p>The table below the chart shows the counts and percentages for each country.</p>
+
+<p>Select a different pair from the popup menu to change the graph &amp; table.</p>
+
+<p><center>
+<div id="natexp_main" style="padding-top:40px"></div></p>
+
+<div style="width:620px;text-align:center;margin-top:20px;">
+<label for='paris'>Select a protocol pair to compare: <select id="pairs">
+<option value="web">HTTP vs HTTPS</option>
+<option value="shell">ssh vs Telnet</option>
+<option value="smtp">SMTP vs SMTPS</option>
+<option value="imap">IMAP over SSL vs IMAP</option>
+<option value="pop">POP3 over TLS SSL vs POP3</option>
+</select></label>
+</div>
+<div id="tabdiv">
+<table id="tab">
+<thead>
+<tr>
+<th>Country</th>
+<th>Total nodes</th>
+<th>Unencrypted count</th>
+<th>Unencrupted %</th>
+<th>Encrypted count</th>
+<th>Encrypted %</th>
+</tr>
+</thead>
+<tbody id="tb">
+</tbody>
+</table>
+</center>
+</div> 
+
+<script src="/js/natexp/portwarsdat.js"></script>
+<script src="/js/natexp/portwars.js"></script>
+
     </section>
 
-    <footer class="post-footer">
-        <span>
-            
-            
-        </span>
-    </footer>
-</article>
-	
-		<article class="li post">
-    <header class="post-header">
-        <h3 class="post-title"><a href="http://data.labs.rapid7.com/post/natexp-portwars/">National Exposure - Port Wars</a></h3>
-        <p class="post-time"><time datetime="2016-06-15T14:47:30-04:00">June 15, 2016</time></p>
-    </header>
-    
-    <section class="post-excerpt">
-        <p><p>You can use this interactive visualization to explore the battle between encrypted &amp; unencrypted services.</p>
-</p>
-    </section>
+    <hr>
 
     <footer class="post-footer">
-        <span>
+        <section class="f-1">
             
             
-        </span>
+            <p class="f-post-time"><time datetime="2016-06-15T14:47:30-04:00">June 15, 2016</time></p>
+        </section>
+                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=National%20Exposure%20-%20Port%20Wars&url=http%3a%2f%2fdata.labs.rapid7.com%2fpost%2fnatexp-portwars%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fdata.labs.rapid7.com%2fpost%2fnatexp-portwars%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fdata.labs.rapid7.com%2fpost%2fnatexp-portwars%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                        
     </footer>
 </article>
-	
-	
 	</div>
 </main>
     <footer id="site-footer">
@@ -103,6 +163,7 @@
     <script type="text/javascript">
       $(".heading").fitText();
     </script>
+
 
 </body>
 </html>

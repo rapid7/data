@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="Rapid7">
+        <meta name="keywords" content="awesome, definitely">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@https://twitter.com/rapid7">
+        <meta name="twitter:creator" content="@https://twitter.com/rapid7">
+        <meta name="twitter:domain" content="http://data.labs.rapid.com/">
+        <meta property="og:site_name" content="Data Science @ Rapid7">
+        <meta property="og:title" content="Data Science @ Rapid7">
+        <meta property="og:url" content="http://data.labs.rapid7.com/post/natexp-heatmap/">
+        <meta property="og:description" content="">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="Rapid7" />
+        <meta property="og:article:published_time" content="2016-06-15T14:47:30-04:00" />
+    
+        <meta name="generator" content="Hugo 0.16" />
+        <title>National Exposure - Port Explorer &middot; Data Science @ Rapid7 </title>
+        <link rel="canonical" href="http://data.labs.rapid7.com" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type='text/css' href="http://data.labs.rapid7.comcss/main.css"/>
+        <script src="http://data.labs.rapid7.comjs/d3.3.5.17.min.js"/></script>
+        <script src="http://data.labs.rapid7.comjs/d3-jetpack.js"/></script>
+        <script src="http://data.labs.rapid7.comjs/d3.tip.js"/></script>
+        <script src="http://data.labs.rapid7.comjs/tablefilter/tablefilter.js"/></script>
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700' rel='stylesheet' type='text/css'>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://data.labs.rapid7.com" alt="Data Science @ Rapid7"><h1 class="blog-title heading">Data Science @ Rapid7</h1></a>
+            <p class="blog-description"></p>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">National Exposure - Port Explorer</h3>
+    </header>
+
+    <section class="post-content">
+        <p>The heatmap below shows the &ldquo;services exposure&rdquo; for a given region. The rows of the heatmap are the number of ports exposed (starting with &ldquo;1&rdquo; at the bottom). Each column is a country and the color of each square is the percentage of devices within country that have that many ports exposed (red&#x2192;blue).</p>
+
+<style>
+.d3-tip {
+  font-size:11pt;
+  line-height: 1.4;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: " ";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.axis text {
+  font: 11px sans-serif;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+  /*shape-rendering: crispEdges;*/
+}
+
+.grid-background {
+  fill: #ddd;
+}
+
+.grid line,
+.grid path {
+  fill: none;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.grid .minor.tick line {
+  stroke-opacity: .5;
+}
+
+.brush .extent {
+  stroke: #000;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.ylab {
+  font-family: Raleway, sans-serif;
+  text-anchor:end;
+  font-size:8pt;
+}
+
+#splain { width:800px; text-align: left}
+#heatctrl { width:800px; text-align: right; font-size:9pt;}
+#heatmain { width:800px; }
+#heatpan { width:800px; }
+
+input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+  width: 10px;
+  display: inline-block;
+}
+</style>
+
+<p>The heatmap is ordered left-to-right from countries with least open port/node volume to those with most open port/node volume. Hover over a square to see what&rsquo;s inside.</p>
+
+<p>There are some interesting outliers to hunt for, such as:</p>
+
+<ul>
+<li>The Falkland Islands which has ~83% of their systems/devices (1,814) exposing 14 ports</li>
+<li>French Polynesia which has ~28.3% of their systems/devices (1,700) exposing 30 ports</li>
+<li>Gibraltar which has ~31% of their systems/devices (1,724) exposing 23 ports</li>
+<li>Qatar which has ~21% of their systems/devices (8,619) exposing 25 ports</li>
+<li>The unusual &ldquo;line&rdquo; across at port count 24 looks like we may have caught some Dionaea honeypots and/or port-forwarding firewalls/routers</li>
+</ul>
+
+<div id="heatctrl">
+Fill by (overall) count instead of percentage <input type="checkbox" id="fill_box" onclick="toggle_fill(this);"/>
+</div>
+<div id="heatmain"></div>
+<div id="heatpan"></div>
+
+<script src="/js/natexp/heatdat.js"></script>
+<script src="/js/natexp/heat.js"></script>
+
+    </section>
+
+    <hr>
+
+    <footer class="post-footer">
+        <section class="f-1">
+            
+            
+            <p class="f-post-time"><time datetime="2016-06-15T14:47:30-04:00">June 15, 2016</time></p>
+        </section>
+                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=National%20Exposure%20-%20Port%20Explorer&url=http%3a%2f%2fdata.labs.rapid7.com%2fpost%2fnatexp-heatmap%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fdata.labs.rapid7.com%2fpost%2fnatexp-heatmap%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fdata.labs.rapid7.com%2fpost%2fnatexp-heatmap%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                        
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <a href="http://data.labs.rapid7.comindex.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
+            <section>&copy; <a href="http://data.labs.rapid7.com">Rapid7</a> 2016 | All rights reserved</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://data.labs.rapid7.comjs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

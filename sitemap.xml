@@ -7,7 +7,12 @@
   </url>
   
   <url>
-    <loc>http://data.labs.rapid7.com/post/national-exposure/</loc>
+    <loc>http://data.labs.rapid7.com/post/natexp-heatmap/</loc>
+    <lastmod>2016-06-15T14:47:30-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://data.labs.rapid7.com/post/natexp-portwars/</loc>
     <lastmod>2016-06-15T14:47:30-04:00</lastmod>
   </url>
   

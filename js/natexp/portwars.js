@@ -26,7 +26,7 @@ var tip = d3.tip()
             .html(function(d) { return("<b>" + d.country + "</b>") });
 
 var margin_main = { top: 1, right: 30, bottom: 1, left: 30 };
-var main_width = 620 - margin_main.left - margin_main.right;
+var main_width = 800 - margin_main.left - margin_main.right;
 var main_height = 240 - margin_main.top - margin_main.bottom;
 
 var x = d3.scale.linear()
@@ -37,7 +37,7 @@ var y = d3.scale.linear()
           .domain([-1, 1])
           .range([main_height, 0]);
 
-var main_svg = d3.select("#main")
+var main_svg = d3.select("#natexp_main")
                  .append("svg")
                  .attr("width", main_width + margin_main.left + margin_main.right)
                  .attr("height", main_height + margin_main.top + margin_main.bottom)
@@ -173,7 +173,7 @@ function update_segments(cat) {
 }
 
 tf = new TableFilter("tab", {
-  base_path: "js/tablefilter/",
+  base_path: "/js/tablefilter/",
   auto_filter: true,
   auto_filter_delay: 800, //milliseconds
   filters_row_index: 1,

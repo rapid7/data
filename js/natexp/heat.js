@@ -32,10 +32,10 @@ var dat_color_count = d3.scale
 var margin_show = {top: 1, right: 1, bottom: 1, left: 90};
 var margin_pan =  {top: 1, right: 1, bottom: 1, left: 90};
 
-var show_width = 960 - margin_show.left - margin_show.right;
+var show_width = 800 - margin_show.left - margin_show.right;
 var show_height = 400 - margin_show.top - margin_show.bottom;
 
-var pan_width = 960 - margin_pan.left - margin_pan.right;
+var pan_width = 800 - margin_pan.left - margin_pan.right;
 var pan_height = 20 - margin_pan.top - margin_pan.bottom;
 
 var gridSizeW = show_width / 50;
@@ -49,7 +49,7 @@ var y = d3.scale.linear()
           .domain([1, 30])
           .range([30, 1]);
 
-var main_svg = d3.select("#main")
+var main_svg = d3.select("#heatmain")
                  .append("svg")
                  .attr("width", show_width + margin_show.left + margin_show.right)
                  .attr("height", show_height + margin_show.top + margin_show.bottom)
@@ -107,7 +107,7 @@ var brush = d3.svg
               .extent([1, 50])
               .on("brush", brushed);
 
-var svg = d3.select("#pan")
+var svg = d3.select("#heatpan")
             .append("svg")
             .attr("width", pan_width + margin_pan.left + margin_pan.right)
             .attr("height", pan_height + margin_pan.top + margin_pan.bottom)

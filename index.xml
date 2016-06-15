@@ -10,12 +10,183 @@
     <atom:link href="http://data.labs.rapid7.com/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Behind the National Exposure Index</title>
-      <link>http://data.labs.rapid7.com/post/national-exposure/</link>
+      <title>National Exposure - Port Explorer</title>
+      <link>http://data.labs.rapid7.com/post/natexp-heatmap/</link>
       <pubDate>Wed, 15 Jun 2016 14:47:30 -0400</pubDate>
       
-      <guid>http://data.labs.rapid7.com/post/national-exposure/</guid>
-      <description>&lt;p&gt;Test&lt;/p&gt;
+      <guid>http://data.labs.rapid7.com/post/natexp-heatmap/</guid>
+      <description>&lt;p&gt;The heatmap below shows the &amp;ldquo;services exposure&amp;rdquo; for a given region. The rows of the heatmap are the number of ports exposed (starting with &amp;ldquo;1&amp;rdquo; at the bottom). Each column is a country and the color of each square is the percentage of devices within country that have that many ports exposed (red&amp;#x2192;blue).&lt;/p&gt;
+
+&lt;style&gt;
+.d3-tip {
+  font-size:11pt;
+  line-height: 1.4;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: &#34; &#34;;
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.axis text {
+  font: 11px sans-serif;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+  /*shape-rendering: crispEdges;*/
+}
+
+.grid-background {
+  fill: #ddd;
+}
+
+.grid line,
+.grid path {
+  fill: none;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.grid .minor.tick line {
+  stroke-opacity: .5;
+}
+
+.brush .extent {
+  stroke: #000;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.ylab {
+  font-family: Raleway, sans-serif;
+  text-anchor:end;
+  font-size:8pt;
+}
+
+#splain { width:800px; text-align: left}
+#heatctrl { width:800px; text-align: right; font-size:9pt;}
+#heatmain { width:800px; }
+#heatpan { width:800px; }
+
+input[type=&#34;checkbox&#34;] {
+  box-sizing: border-box;
+  padding: 0;
+  width: 10px;
+  display: inline-block;
+}
+&lt;/style&gt;
+
+&lt;p&gt;The heatmap is ordered left-to-right from countries with least open port/node volume to those with most open port/node volume. Hover over a square to see what&amp;rsquo;s inside.&lt;/p&gt;
+
+&lt;p&gt;There are some interesting outliers to hunt for, such as:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The Falkland Islands which has ~83% of their systems/devices (1,814) exposing 14 ports&lt;/li&gt;
+&lt;li&gt;French Polynesia which has ~28.3% of their systems/devices (1,700) exposing 30 ports&lt;/li&gt;
+&lt;li&gt;Gibraltar which has ~31% of their systems/devices (1,724) exposing 23 ports&lt;/li&gt;
+&lt;li&gt;Qatar which has ~21% of their systems/devices (8,619) exposing 25 ports&lt;/li&gt;
+&lt;li&gt;The unusual &amp;ldquo;line&amp;rdquo; across at port count 24 looks like we may have caught some Dionaea honeypots and/or port-forwarding firewalls/routers&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div id=&#34;heatctrl&#34;&gt;
+Fill by (overall) count instead of percentage &lt;input type=&#34;checkbox&#34; id=&#34;fill_box&#34; onclick=&#34;toggle_fill(this);&#34;/&gt;
+&lt;/div&gt;
+&lt;div id=&#34;heatmain&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;heatpan&#34;&gt;&lt;/div&gt;
+
+&lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/heatdat.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/heat.js&#34;&gt;&lt;/script&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>National Exposure - Port Wars</title>
+      <link>http://data.labs.rapid7.com/post/natexp-portwars/</link>
+      <pubDate>Wed, 15 Jun 2016 14:47:30 -0400</pubDate>
+      
+      <guid>http://data.labs.rapid7.com/post/natexp-portwars/</guid>
+      <description>&lt;p&gt;You can use this interactive visualization to explore the battle between encrypted &amp;amp; unencrypted services.&lt;/p&gt;
+
+&lt;style&gt;
+td {
+  font-size: 10pt;
+  text-align: right;
+}
+
+table.TF th {
+  text-align: center;
+}
+
+div#tabdiv {
+  margin-top:30px;
+  height:540px;
+  overflow:auto;
+}
+&lt;/style&gt;
+
+&lt;p&gt;The default view is showing plaintext (HTTP) vs encrypted (HTTPS) nodes. The bars are sorted by regions with the worst unencrypted vs encrypted makeup to the best.&lt;/p&gt;
+
+&lt;p&gt;The table below the chart shows the counts and percentages for each country.&lt;/p&gt;
+
+&lt;p&gt;Select a different pair from the popup menu to change the graph &amp;amp; table.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;div id=&#34;natexp_main&#34; style=&#34;padding-top:40px&#34;&gt;&lt;/div&gt;&lt;/p&gt;
+
+&lt;div style=&#34;width:620px;text-align:center;margin-top:20px;&#34;&gt;
+&lt;label for=&#39;paris&#39;&gt;Select a protocol pair to compare: &lt;select id=&#34;pairs&#34;&gt;
+&lt;option value=&#34;web&#34;&gt;HTTP vs HTTPS&lt;/option&gt;
+&lt;option value=&#34;shell&#34;&gt;ssh vs Telnet&lt;/option&gt;
+&lt;option value=&#34;smtp&#34;&gt;SMTP vs SMTPS&lt;/option&gt;
+&lt;option value=&#34;imap&#34;&gt;IMAP over SSL vs IMAP&lt;/option&gt;
+&lt;option value=&#34;pop&#34;&gt;POP3 over TLS SSL vs POP3&lt;/option&gt;
+&lt;/select&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tabdiv&#34;&gt;
+&lt;table id=&#34;tab&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Country&lt;/th&gt;
+&lt;th&gt;Total nodes&lt;/th&gt;
+&lt;th&gt;Unencrypted count&lt;/th&gt;
+&lt;th&gt;Unencrupted %&lt;/th&gt;
+&lt;th&gt;Encrypted count&lt;/th&gt;
+&lt;th&gt;Encrypted %&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody id=&#34;tb&#34;&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/center&gt;
+&lt;/div&gt; 
+
+&lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/portwarsdat.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/portwars.js&#34;&gt;&lt;/script&gt;
 </description>
     </item>
     
