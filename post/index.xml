@@ -155,38 +155,35 @@ div#tabdiv {
 
 &lt;p&gt;Select a different pair from the popup menu to change the graph &amp;amp; table.&lt;/p&gt;
 
-&lt;p&gt;&lt;center&gt;
-&lt;div id=&#34;natexp_main&#34; style=&#34;padding-top:40px&#34;&gt;&lt;/div&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;center&gt;&lt;div id=&#34;natexp_main&#34; style=&#34;padding-top:40px&#34;&gt;&lt;/div&gt;
 &lt;div style=&#34;width:620px;text-align:center;margin-top:20px;&#34;&gt;
-&lt;label for=&#39;paris&#39;&gt;Select a protocol pair to compare: &lt;select id=&#34;pairs&#34;&gt;
-&lt;option value=&#34;web&#34;&gt;HTTP vs HTTPS&lt;/option&gt;
-&lt;option value=&#34;shell&#34;&gt;ssh vs Telnet&lt;/option&gt;
-&lt;option value=&#34;smtp&#34;&gt;SMTP vs SMTPS&lt;/option&gt;
-&lt;option value=&#34;imap&#34;&gt;IMAP over SSL vs IMAP&lt;/option&gt;
-&lt;option value=&#34;pop&#34;&gt;POP3 over TLS SSL vs POP3&lt;/option&gt;
-&lt;/select&gt;&lt;/label&gt;
+ &lt;label for=&#39;paris&#39;&gt;Select a protocol pair to compare: &lt;select id=&#34;pairs&#34;&gt;
+ &lt;option value=&#34;web&#34;&gt;HTTP vs HTTPS&lt;/option&gt;
+ &lt;option value=&#34;shell&#34;&gt;ssh vs Telnet&lt;/option&gt;
+ &lt;option value=&#34;smtp&#34;&gt;SMTP vs SMTPS&lt;/option&gt;
+ &lt;option value=&#34;imap&#34;&gt;IMAP over SSL vs IMAP&lt;/option&gt;
+ &lt;option value=&#34;pop&#34;&gt;POP3 over TLS SSL vs POP3&lt;/option&gt;
+ &lt;/select&gt;&lt;/label&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tabdiv&#34;&gt;
-&lt;table id=&#34;tab&#34;&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Country&lt;/th&gt;
-&lt;th&gt;Total nodes&lt;/th&gt;
-&lt;th&gt;Unencrypted count&lt;/th&gt;
-&lt;th&gt;Unencrupted %&lt;/th&gt;
-&lt;th&gt;Encrypted count&lt;/th&gt;
-&lt;th&gt;Encrypted %&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody id=&#34;tb&#34;&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
+ &lt;table id=&#34;tab&#34;&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Country&lt;/th&gt;
+ &lt;th&gt;Total nodes&lt;/th&gt;
+ &lt;th&gt;Unencrypted count&lt;/th&gt;
+ &lt;th&gt;Unencrupted %&lt;/th&gt;
+ &lt;th&gt;Encrypted count&lt;/th&gt;
+ &lt;th&gt;Encrypted %&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody id=&#34;tb&#34;&gt;
+ &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
 &lt;/center&gt;
-&lt;/div&gt; 
-
 &lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/portwarsdat.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/portwars.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;http://data.labs.rapid7.com/js/natexp/portwars.js&#34;&gt;&lt;/script&gt;&lt;/p&gt;
 </description>
     </item>
     
