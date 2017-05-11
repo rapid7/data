@@ -1,0 +1,380 @@
+<html>
+<head><meta charset="utf-8">
+  <title>IoTpocalypse</title>
+<style>
+body { font-family: "Roboto Condensed", Arial, Helvetica, sans-serif; }
+svg { shape-rendering: geometricPrecision; }
+text { font: 10px "Roboto Condensed", Arial, sans-serif; }
+.tooltipbox {
+    padding: 5px;
+    background: rgb(247, 252, 253);
+    color: rgb(5, 48, 97);
+  text-align: left;
+  font-size: 75%;
+  font-family:Tahoma, Geneva, sans-serif;
+    border: 1px solid rgb(5, 48, 97);
+    margin: 0px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(164, 164, 164, 1);
+    box-shadow: 0px 0px 5px 0px rgba(164, 164, 164, 1);
+}
+.label {
+  padding-top:2px;
+  padding-left:4px;
+  text-overflow: clip;
+  overflow: hidden;
+  font-weight: 400;
+}
+
+.labelbody {
+  text-overflow: clip;
+  text-align: left;
+  word-wrap: normal;
+}
+
+.iso3c {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;  
+}
+
+.foreignObject {
+  font-size: 9px;
+  font-weight: 400;
+  font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+  text-overflow: clip;
+  text-align: left;
+  word-wrap: normal;
+  padding:0;
+}
+
+.foreignObject body { margin:0; }
+
+#leg_cont {
+  margin-top: 25px;
+  margin-left: 25px;
+  display:block;
+  float: left;
+}
+
+#legend {
+  font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+  font-size:8pt;
+  display:block;
+}
+
+#counts {
+  width:100%;
+}
+
+#vis {
+  display:block;
+  float:left;
+}
+
+#title {
+  font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+  font-size:24pt;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+#container {
+  width:100%;
+  height: 610px;
+}
+
+#outer {
+  width:100%;
+}
+
+.download { 
+  background: #333; 
+  color: #FFF; 
+  font-weight: 900; 
+  border: 2px solid #B10000; 
+  padding: 4px; 
+  margin:4px;
+}
+</style>
+
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i" rel="stylesheet">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+<h3>Finding "Things" in Rapid7 Project Sonar Port 80 Scan Data</h1>
+<hr noshade size=1/>
+
+<div id="outer">
+<div id="title"></div>
+<div id="container">
+  <div id="vis"></div>
+  <div id="leg_cont">
+    <div id="counts">
+      <b>Country with max nodes:</b><br/><span id="country"></span> - <span id="country_tot"></span>
+    </div>
+    <div id="legend"><b><span id="legend_title"></span></b><br/></div>
+    <div id="seldiv">
+    <select id="chgdev">
+    <option value="therest">All 'things'</option>
+    <option value="nolight">Excluding "lighttpd" web server</option>
+    <option value="embedded">"Embedded"</option>
+    <option value="goahead">GoAhead web server</option>
+    <option value="dnvrs">DNVRS web server</option>
+    <option value="boa">Boa web server</option>
+    <option value="mbedthis">Mbedthis web server</option>
+    <option value="reecam">ReeCam web server</option>
+    <option value="rompager">RomPager web server</option>
+    <option value="upnp">UPnP</option>
+    <option value="reliable">Reliable web server</option>
+    <option value="printers">"HP Printers"</option>  
+    </select></div>
+  </div>
+</div>
+</div>
+<!-- button class="download" onclick="javascript:(function () { var e = document.createElement('script'); if (window.location.protocol === 'https:') { e.setAttribute('src', 'https://rawgit.com/NYTimes/svg-crowbar/gh-pages/svg-crowbar.js'); } else { e.setAttribute('src', 'http://nytimes.github.com/svg-crowbar/svg-crowbar.js'); } e.setAttribute('class', 'svg-crowbar'); document.body.appendChild(e); })();"><big>⇩</big> Download</i -->
+
+<script>
+
+var titles = {};
+titles.boa = "Boa web server";
+titles.dnvrs = "DNVRS web server";
+titles.embedded = "'Embedded' web servers";
+titles.goahead = "GoAhead web server";
+titles.mbedthis = "Embedthis web server";
+titles.nolight = "No 'lighttpd' devices";
+titles.printers = "HP Printers";
+titles.reecam = "ReeCam web server";
+titles.reliable = "'Reliable' web server";
+titles.rompager = "RomPager web server";
+titles.therest = "'All' Things";
+titles.upnp = "UPnP";
+
+const margin = { top: 10, right: 10, bottom: 10, left: 10 },
+    width = 1200 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+const regions = [ "North America", "Latin America & Caribbean", "Sub-Saharan Africa", 
+                  "Middle East & North Africa", "Europe", "Asia", "Oceania" ];
+
+const reg_cols = [ '#4daf4a', '#984ea3', '#ffff33', '#ff7f00', '#377eb8', '#a65628', '#f781bf', '#f0f0f0' ];
+  
+const col_regions = [ "North America", "Latin America & Caribbean", "Sub-Saharan Africa", 
+                      "Middle East & North Africa", "Europe", "Asia", "Oceania", "World" ];
+
+const tree_regions = [ "World", "North America", "Latin America & Caribbean", "Europe", 
+                       "Middle East & North Africa", "Sub-Saharan Africa", "Asia", "Oceania" ];
+
+const color = d3.scaleOrdinal().range(reg_cols).domain(col_regions)
+const region_ord = d3.scaleOrdinal().range([0, 1, 2, 3, 4, 5, 6, 7, 8]).domain(tree_regions);
+const x_ofs = 5, y_ofs = 3;
+const min_lab_ht = 12, min_lab_wd = 25;
+
+var total_nodes = 0;
+var scale_alpha_xform = d3.scaleLog().range([0, 1.0]);
+
+const comma = d3.format(',');
+
+function scale_alpha(x) {
+  if (x === 0){
+    return(0);
+  } else {
+    return scale_alpha_xform(x);
+  }
+}
+
+const flatten = arr => arr.reduce(
+  (acc, val) => acc.concat(
+    Array.isArray(val) ? flatten(val) : val
+  ),
+  []
+);
+
+var dbg;
+
+var tooltip = d3.select("body")
+  .append("div")
+  .attr("class", "tooltipbox")
+    .style("min-width", "50px")
+    .style("min-height", "50px")
+  .style("position", "absolute")
+  .style("z-index", "10")
+  .style("visibility", "hidden")
+  .text("");
+
+var treemap = d3.treemap()
+    .tile(d3.treemapResquarify)
+    .size([width, height])
+    .round(true)
+    .paddingInner(1);
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var legend = d3.select("#legend")
+    .append("svg")
+    .style("height", "120px")
+    .append("g")
+    .attr("class", "legend");
+
+for (var i=0; i<regions.length; i++) {
+
+  for (var j=0; j<5; j++) {
+
+    legend.append("rect")
+      .attr("x", (j*12))
+      .attr("y", 7+(14*i))
+      .attr("width", 12)
+      .attr("height", 12)
+      .attr("stroke", "#666")
+      .attr("stroke-width", "0.0")
+      .attr("fill", color(regions[i]))
+      .attr('fill-opacity', (j+1)*0.2);
+
+  }
+
+  legend.append("text")
+    .attr("x", 65)
+    .attr("y", 14+(14*i))
+    .attr("dy", ".35em")
+    .attr("font-size", "11")
+    .text(regions[i]);
+
+}
+
+function sum_by_boa(d) { return(d.boa) }
+function sum_by_dnvrs(d) { return(d.dnvrs) }
+function sum_by_embedded(d) { return(d.embedded) }
+function sum_by_goahead(d) { return(d.goahead) }
+function sum_by_mbedthis(d) { return(d.mbedthis) }
+function sum_by_nolight(d) { return(d.nolight) }
+function sum_by_printers(d) { return(d.printers) }
+function sum_by_reecam(d) { return(d.reecam) }
+function sum_by_reliable(d) { return(d.reliable) }
+function sum_by_rompager(d) { return(d.rompager) }
+function sum_by_therest(d) { return(d.therest) }
+function sum_by_upnp(d) { return(d.upnp) }
+
+var box;
+
+var SEL = "therest"
+
+var do_vis = function(data) {
+
+  dbg = data;
+
+  root = d3.hierarchy(data)
+           .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.iso3c; })
+           .sum(sum_by_boa)
+           .sort(function(a, b) { return( region_ord(b.data.oii_reg) - region_ord(a.data.oii_reg) || b.width - a.width ) })
+
+  treemap(root);
+
+  const max_val = flatten(data.children.map(d => d.children)).sort((a,b) => b[SEL] - a[SEL])[0];
+  total_nodes = d3.sum(flatten(data.children.map(d => d.children)), d => d[SEL]);
+
+  d3.select("#title").text(titles[SEL] + " - " + comma(total_nodes) + " devices found");
+
+  d3.select("#country").html(max_val.country);
+  d3.select("#country_tot").html(comma(max_val[SEL]));
+  //d3.select("#node_tot").html(comma(total_nodes));
+
+  scale_alpha_xform.domain([1, max_val[SEL]]);
+  
+  var cell = svg.selectAll("g")
+    .data(root.leaves())
+    .enter().append("g")
+      .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+
+  cell.append("rect")
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.25)
+    .attr("id", d => d.data.id)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("height", d => d.y1 - d.y0)
+    .attr("fill", d => color(d.data.oii_reg))
+    .style("fill-opacity", d => scale_alpha(d.data[SEL]))
+    .on("mouseover", function(d) { 
+      tooltip.html("<center>" +d.data.oii_reg + " ≫ " + "<b>"+d.data.country+"</b><br/><br/>" + comma(d.data[SEL]) + " devices</center>");
+      return tooltip.style("visibility", "visible");
+    })
+    .on("mousemove", function() { 
+        tooltip_x = d3.event.pageX + parseInt(tooltip.style("width")) < 1000 ? d3.event.pageX : 1000 - parseInt(tooltip.style("width"));
+        tooltip_y = d3.event.pageY+15+parseInt(tooltip.style("height")) < 600 ? d3.event.pageY+15 : d3.event.pageY - 5 - parseInt(tooltip.style("height"));
+        return tooltip.style("top", String(tooltip_y)+"px").style("left", String(tooltip_x)+"px");
+    })
+    .on("mouseout", d => tooltip.style("visibility", "hidden"))
+  
+  cell.append("clipPath")
+      .attr("id", function(d) { return "clip-" + d.data.id; })
+    .append("use")
+      .attr("xlink:href", function(d) { return "#" + d.data.id; });
+
+  cell.append("text")
+      .attr("class", "iso3c")
+      .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
+    .selectAll("tspan")
+      .data(function(d) { return d.data.iso3c.split(/(?=[A-Z][^A-Z])/g); })
+    .enter().append("tspan")
+      .attr("x", 4)
+      .attr("y", function(d, i) { return 13 + i * 10; })
+      .text(d => d)
+
+  d3.select('#chgdev')
+    .on('change', function(sum) {
+          
+        // timeout.stop();
+
+        var which = d3.select(this).property('value')
+
+        const max_val = flatten(data.children.map(d => d.children)).sort((a,b) => b[which] - a[which])[0];
+        total_nodes = d3.sum(flatten(data.children.map(d => d.children)), d => d[which]);
+
+        d3.select("#country").html(max_val.country);
+        d3.select("#country_tot").html(comma(max_val[which]));
+
+        SEL = which;
+
+        d3.select("#title").text(titles[d3.select(this).property('value')] + " - " + comma(total_nodes) + " devices found");
+
+        scale_alpha_xform.domain([1, max_val[which]]);
+
+        if (which == "therest") treemap(root.sum(sum_by_therest))
+        if (which == "nolight") treemap(root.sum(sum_by_dnvrs))
+        if (which == "embedded") treemap(root.sum(sum_by_embedded))
+        if (which == "goahead") treemap(root.sum(sum_by_goahead))
+        if (which == "dnvrs") treemap(root.sum(sum_by_dnvrs))
+        if (which == "boa") treemap(root.sum(sum_by_boa))
+        if (which == "mbedthis") treemap(root.sum(sum_by_nolight))
+        if (which == "reecam") treemap(root.sum(sum_by_reecam))
+        if (which == "rompager") treemap(root.sum(sum_by_rompager))
+        if (which == "reliable") treemap(root.sum(sum_by_reliable))
+        if (which == "upnp") treemap(root.sum(sum_by_upnp))
+        if (which == "printers") treemap(root.sum(sum_by_printers))
+
+        cell.transition()
+            .duration(750)
+            .attr("transform", function(d) { 
+              var x = isNaN(d.x0) ? 0 : d.x0,  y = isNaN(d.y0) ? 0 : d.y0;
+              return "translate(" + x + "," + y + ")"; 
+             })
+            .select("rect")
+            .attr("width",  function(d) { var r = d.x1 - d.x0; return(isNaN(r) ? 0 : r); })
+            .attr("height", function(d) { var r = d.y1 - d.y0; return(isNaN(r) ? 0 : r); })
+            .attr("fill", d => color(d.data.oii_reg))
+            .style("fill-opacity", d => scale_alpha(d.data[which]));
+
+    })
+
+};
+
+var start_vis = function(error, combined) { do_vis(combined); };
+
+d3.queue()
+  .defer(d3.json, "combined.json")
+  .await(start_vis);
+</script>
+
+<div class="tooltipbox" style="visibility: hidden;"></div>
+</body>
+</html>
