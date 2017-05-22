@@ -13,7 +13,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, fig.retina = 2, message = FALSE, warning = FALSE)
 ```
 
-The following is a bit of the code & data used to produce the `#WannaCry` visualizations in various Rapd7 blog posts and tweets, including [this one](https://community.rapid7.com/community/infosec/blog/2017/05/16/update-on-wannacry-vulnerable-smb-shares-are-widely-deployed-and-people-are-scanning-for-them).
+The following is a bit of the code & data used to produce the `#WannaCry` visualizations in various Rapid7 blog posts and tweets, including [this one](https://community.rapid7.com/community/infosec/blog/2017/05/16/update-on-wannacry-vulnerable-smb-shares-are-widely-deployed-and-people-are-scanning-for-them).
 
 We'll need some library help:
 
