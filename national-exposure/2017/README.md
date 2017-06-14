@@ -1,0 +1,6 @@
+- `countries-ip-found-assigned-usage.csv` : IPv4s found & calculated total range size from public CIDR assignments
+- `portscan-names-and-counts-2017.csv` : what we found (aggregated)
+- `rank.r` / `rank.rdata` : reproducible rankings code
+- `top-50.csv` / `therest.csv` : the rankings. Top 50 made by via  Cross-Entropy Monte Carlo algorithm, the rest through a simpler weighted average process
+- `final_figures/` : hi-res versions of the figures used in the report
+- `nei_2017.json` : data behind the NatExp 2017 interactives
