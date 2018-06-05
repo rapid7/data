@@ -1,0 +1,682 @@
+device_type,country,iso2c,n
+asus,Australia,AU,1
+asus,Austria,AT,3
+asus,Bahrain,BH,1
+asus,Belgium,BE,1
+asus,Brazil,BR,4
+asus,Canada,CA,7
+asus,China,CN,5
+asus,Czechia,CZ,6
+asus,Germany,DE,1
+asus,Hong Kong,HK,2
+asus,Ireland,IE,1
+asus,Italy,IT,7
+asus,Latvia,LV,1
+asus,Netherlands,NL,1
+asus,Norway,NO,1
+asus,Panama,PA,1
+asus,Paraguay,PY,1
+asus,Poland,PL,2
+asus,Portugal,PT,1
+asus,Republic of Korea,KR,1
+asus,Romania,RO,3
+asus,Russia,RU,47
+asus,Saudi Arabia,SA,3
+asus,Slovak Republic,SK,1
+asus,Slovenia,SI,1
+asus,South Africa,ZA,1
+asus,Sweden,SE,4
+asus,Taiwan,TW,5
+asus,Ukraine,UA,13
+asus,United Arab Emirates,AE,1
+asus,United Kingdom,GB,8
+asus,United States,US,100
+dlink,Algeria,DZ,2
+dlink,Angola,AO,1
+dlink,Argentina,AR,1
+dlink,Armenia,AM,2
+dlink,Australia,AU,124
+dlink,Bangladesh,BD,4
+dlink,Belarus,BY,15
+dlink,Belgium,BE,2
+dlink,Brazil,BR,44
+dlink,Bulgaria,BG,3
+dlink,Canada,CA,225
+dlink,Chile,CL,1
+dlink,China,CN,44
+dlink,Colombia,CO,2
+dlink,Costa Rica,CR,2
+dlink,Croatia,HR,3
+dlink,Cuba,CU,1
+dlink,Czechia,CZ,9
+dlink,Denmark,DK,1
+dlink,Egypt,EG,1
+dlink,Estonia,EE,1
+dlink,France,FR,5
+dlink,Georgia,GE,4
+dlink,Germany,DE,6
+dlink,Ghana,GH,1
+dlink,Greece,GR,1
+dlink,Hong Kong,HK,1
+dlink,Hungary,HU,7
+dlink,India,IN,549
+dlink,Indonesia,ID,2
+dlink,Iran,IR,8
+dlink,Israel,IL,43
+dlink,Italy,IT,12
+dlink,Japan,JP,1064
+dlink,Kazakhstan,KZ,12
+dlink,Kyrgyzstan,KG,29
+dlink,Latvia,LV,12
+dlink,Malaysia,MY,6
+dlink,Morocco,MA,6
+dlink,Nepal,NP,2
+dlink,Netherlands,NL,8
+dlink,New Zealand,NZ,18
+dlink,Nigeria,NG,1
+dlink,Norway,NO,3
+dlink,Pakistan,PK,15
+dlink,Poland,PL,10
+dlink,Republic of Korea,KR,58
+dlink,Republic of Lithuania,LT,18
+dlink,Republic of Moldova,MD,1
+dlink,Romania,RO,4
+dlink,Russia,RU,1840
+dlink,Senegal,SN,1
+dlink,Singapore,SG,1
+dlink,Slovak Republic,SK,1
+dlink,South Africa,ZA,4
+dlink,Spain,ES,2
+dlink,Sweden,SE,7
+dlink,Switzerland,CH,2
+dlink,Taiwan,TW,276
+dlink,Tanzania,TZ,1
+dlink,Thailand,TH,12
+dlink,Trinidad and Tobago,TT,1
+dlink,Tunisia,TN,1
+dlink,Turkey,TR,6
+dlink,Turkmenistan,TM,1
+dlink,Ukraine,UA,238
+dlink,United Kingdom,GB,4
+dlink,United States,US,39
+dlink,Vietnam,VN,1
+dlink,NA,NA,5
+huawei,Afghanistan,AF,12
+huawei,Albania,AL,941
+huawei,Algeria,DZ,135
+huawei,Angola,AO,10
+huawei,Argentina,AR,625
+huawei,Armenia,AM,1
+huawei,Australia,AU,157
+huawei,Austria,AT,12
+huawei,Azerbaijan,AZ,46
+huawei,Bahrain,BH,94
+huawei,Bangladesh,BD,33
+huawei,Barbados,BB,3
+huawei,Belarus,BY,55
+huawei,Belgium,BE,2
+huawei,Belize,BZ,4
+huawei,Bermuda,BM,1
+huawei,Bhutan,BT,1
+huawei,Bolivia,BO,1055
+huawei,Bosnia and Herzegovina,BA,20
+huawei,Botswana,BW,1
+huawei,Brazil,BR,4915
+huawei,Brunei,BN,15
+huawei,Bulgaria,BG,777
+huawei,Burkina Faso,BF,2
+huawei,Cambodia,KH,2
+huawei,Cameroon,CM,6
+huawei,Canada,CA,92
+huawei,Cayman Islands,KY,7
+huawei,Chile,CL,326
+huawei,China,CN,87905
+huawei,Colombia,CO,153
+huawei,Congo,CD,12
+huawei,Costa Rica,CR,4
+huawei,Croatia,HR,17
+huawei,Cuba,CU,58
+huawei,Cyprus,CY,3
+huawei,Czechia,CZ,24
+huawei,Denmark,DK,1
+huawei,Dominican Republic,DO,22
+huawei,Ecuador,EC,569
+huawei,Egypt,EG,57
+huawei,El Salvador,SV,1
+huawei,Eritrea,ER,3
+huawei,Ethiopia,ET,2
+huawei,Finland,FI,1
+huawei,France,FR,72
+huawei,Gambia,GM,1
+huawei,Georgia,GE,128
+huawei,Germany,DE,21
+huawei,Ghana,GH,85
+huawei,Greece,GR,78
+huawei,Guam,GU,1
+huawei,Guatemala,GT,6
+huawei,Hashemite Kingdom of Jordan,JO,4
+huawei,Honduras,HN,4
+huawei,Hong Kong,HK,7327
+huawei,Hungary,HU,7058
+huawei,India,IN,406
+huawei,Indonesia,ID,342
+huawei,Iran,IR,15
+huawei,Iraq,IQ,16
+huawei,Ireland,IE,6
+huawei,Israel,IL,3
+huawei,Italy,IT,455
+huawei,Ivory Coast,CI,2
+huawei,Jamaica,JM,5
+huawei,Japan,JP,3
+huawei,Kazakhstan,KZ,96
+huawei,Kenya,KE,111
+huawei,Kuwait,KW,3
+huawei,Kyrgyzstan,KG,1
+huawei,Laos,LA,431
+huawei,Latvia,LV,51
+huawei,Liechtenstein,LI,23
+huawei,Macao,MO,5
+huawei,Macedonia,MK,50
+huawei,Malawi,MW,1
+huawei,Malaysia,MY,17
+huawei,Maldives,MV,5
+huawei,Mali,ML,7
+huawei,Mauritius,MU,284
+huawei,Mexico,MX,7600
+huawei,Mongolia,MN,3
+huawei,Montenegro,ME,169
+huawei,Morocco,MA,180
+huawei,Mozambique,MZ,13
+huawei,Namibia,"NA",2
+huawei,Nepal,NP,48
+huawei,Netherlands,NL,1
+huawei,Nicaragua,NI,1
+huawei,Niger,NE,1
+huawei,Nigeria,NG,64
+huawei,Norway,NO,22
+huawei,Oman,OM,132
+huawei,Pakistan,PK,297
+huawei,Panama,PA,12
+huawei,Papua New Guinea,PG,1
+huawei,Paraguay,PY,24
+huawei,Peru,PE,7
+huawei,Philippines,PH,54
+huawei,Poland,PL,612
+huawei,Portugal,PT,21
+huawei,Puerto Rico,PR,138
+huawei,Qatar,QA,17
+huawei,Republic of Korea,KR,9
+huawei,Republic of Lithuania,LT,1
+huawei,Republic of Moldova,MD,26
+huawei,Romania,RO,625
+huawei,Russia,RU,812
+huawei,Rwanda,RW,2
+huawei,Saudi Arabia,SA,579
+huawei,Senegal,SN,2
+huawei,Serbia,RS,329
+huawei,Sierra Leone,SL,5
+huawei,Singapore,SG,10
+huawei,Slovak Republic,SK,51
+huawei,Somalia,SO,3
+huawei,South Africa,ZA,22
+huawei,Spain,ES,252
+huawei,Sri Lanka,LK,13
+huawei,Sudan,SD,194
+huawei,Sweden,SE,2
+huawei,Switzerland,CH,2
+huawei,Taiwan,TW,23
+huawei,Tajikistan,TJ,29
+huawei,Tanzania,TZ,101
+huawei,Thailand,TH,3076
+huawei,Togo,TG,12
+huawei,Trinidad and Tobago,TT,33
+huawei,Tunisia,TN,35
+huawei,Turkey,TR,261
+huawei,Uganda,UG,4
+huawei,Ukraine,UA,29
+huawei,United Arab Emirates,AE,12
+huawei,United Kingdom,GB,50
+huawei,United States,US,267
+huawei,Uzbekistan,UZ,3
+huawei,Venezuela,VE,125
+huawei,Vietnam,VN,911
+huawei,Zambia,ZM,179
+huawei,Zimbabwe,ZW,48
+huawei,NA,NA,404
+linksys,Argentina,AR,2
+linksys,Austria,AT,1
+linksys,Canada,CA,3
+linksys,Chile,CL,1
+linksys,China,CN,3
+linksys,Colombia,CO,1
+linksys,France,FR,1
+linksys,Greece,GR,2
+linksys,Hong Kong,HK,4
+linksys,Latvia,LV,1
+linksys,Mongolia,MN,1
+linksys,Netherlands,NL,2
+linksys,Norway,NO,1
+linksys,Poland,PL,1
+linksys,Romania,RO,1
+linksys,Russia,RU,1
+linksys,Seychelles,SC,1
+linksys,Slovenia,SI,2
+linksys,Spain,ES,1
+linksys,Thailand,TH,1
+linksys,Turkey,TR,1
+linksys,Ukraine,UA,5
+linksys,United Kingdom,GB,1
+linksys,United States,US,26
+linksys,Venezuela,VE,1
+mikrotik,Afghanistan,AF,264
+mikrotik,Albania,AL,2081
+mikrotik,Algeria,DZ,14
+mikrotik,Andorra,AD,23
+mikrotik,Angola,AO,46
+mikrotik,Antigua and Barbuda,AG,1
+mikrotik,Argentina,AR,4354
+mikrotik,Armenia,AM,252
+mikrotik,Aruba,AW,1
+mikrotik,Australia,AU,981
+mikrotik,Austria,AT,1344
+mikrotik,Azerbaijan,AZ,108
+mikrotik,Bahamas,BS,6
+mikrotik,Bahrain,BH,6
+mikrotik,Bangladesh,BD,5633
+mikrotik,Belarus,BY,241
+mikrotik,Belgium,BE,207
+mikrotik,Belize,BZ,9
+mikrotik,Benin,BJ,172
+mikrotik,Bolivia,BO,462
+mikrotik,Bosnia and Herzegovina,BA,1307
+mikrotik,Botswana,BW,275
+mikrotik,Brazil,BR,29840
+mikrotik,Bulgaria,BG,4157
+mikrotik,Burkina Faso,BF,81
+mikrotik,Burundi,BI,48
+mikrotik,Cambodia,KH,1820
+mikrotik,Cameroon,CM,428
+mikrotik,Canada,CA,2217
+mikrotik,Cape Verde,CV,1
+mikrotik,Cayman Islands,KY,1
+mikrotik,Central African Republic,CF,2
+mikrotik,Chad,TD,41
+mikrotik,Chile,CL,1113
+mikrotik,China,CN,11505
+mikrotik,Cocos [Keeling] Islands,CC,1
+mikrotik,Colombia,CO,4301
+mikrotik,Congo,CD,145
+mikrotik,Cook Islands,CK,5
+mikrotik,Costa Rica,CR,951
+mikrotik,Croatia,HR,552
+mikrotik,Cuba,CU,3
+mikrotik,Curaçao,CW,5
+mikrotik,Cyprus,CY,111
+mikrotik,Czechia,CZ,11799
+mikrotik,Denmark,DK,261
+mikrotik,Djibouti,DJ,3
+mikrotik,Dominica,DM,4
+mikrotik,Dominican Republic,DO,138
+mikrotik,East Timor,TL,52
+mikrotik,Ecuador,EC,6045
+mikrotik,Egypt,EG,300
+mikrotik,El Salvador,SV,81
+mikrotik,Equatorial Guinea,GQ,24
+mikrotik,Eritrea,ER,2
+mikrotik,Estonia,EE,316
+mikrotik,Ethiopia,ET,8
+mikrotik,Finland,FI,15
+mikrotik,France,FR,394
+mikrotik,French Guiana,GF,3
+mikrotik,French Polynesia,PF,2
+mikrotik,Gabon,GA,47
+mikrotik,Gambia,GM,6
+mikrotik,Georgia,GE,429
+mikrotik,Germany,DE,1518
+mikrotik,Ghana,GH,243
+mikrotik,Gibraltar,GI,1
+mikrotik,Greece,GR,558
+mikrotik,Grenada,GD,3
+mikrotik,Guatemala,GT,315
+mikrotik,Guernsey,GG,1
+mikrotik,Guinea,GN,157
+mikrotik,Guyana,GY,1
+mikrotik,Haiti,HT,2
+mikrotik,Hashemite Kingdom of Jordan,JO,12
+mikrotik,Honduras,HN,536
+mikrotik,Hong Kong,HK,334
+mikrotik,Hungary,HU,2531
+mikrotik,Iceland,IS,60
+mikrotik,India,IN,16815
+mikrotik,Indonesia,ID,15995
+mikrotik,Iran,IR,16952
+mikrotik,Iraq,IQ,1973
+mikrotik,Ireland,IE,305
+mikrotik,Isle of Man,IM,12
+mikrotik,Israel,IL,49
+mikrotik,Italy,IT,9494
+mikrotik,Ivory Coast,CI,40
+mikrotik,Jamaica,JM,49
+mikrotik,Japan,JP,31
+mikrotik,Jersey,JE,5
+mikrotik,Kazakhstan,KZ,399
+mikrotik,Kenya,KE,1757
+mikrotik,Kiribati,KI,1
+mikrotik,Kosovo,XK,52
+mikrotik,Kuwait,KW,10
+mikrotik,Kyrgyzstan,KG,126
+mikrotik,Laos,LA,22
+mikrotik,Latvia,LV,2060
+mikrotik,Lebanon,LB,587
+mikrotik,Lesotho,LS,110
+mikrotik,Liberia,LR,119
+mikrotik,Libya,LY,21
+mikrotik,Liechtenstein,LI,1
+mikrotik,Luxembourg,LU,27
+mikrotik,Macao,MO,14
+mikrotik,Macedonia,MK,360
+mikrotik,Madagascar,MG,11
+mikrotik,Malawi,MW,415
+mikrotik,Malaysia,MY,355
+mikrotik,Maldives,MV,24
+mikrotik,Mali,ML,66
+mikrotik,Malta,MT,223
+mikrotik,Mauritania,MR,2
+mikrotik,Mauritius,MU,200
+mikrotik,Mayotte,YT,9
+mikrotik,Mexico,MX,2070
+mikrotik,Mongolia,MN,501
+mikrotik,Montenegro,ME,94
+mikrotik,Morocco,MA,18
+mikrotik,Mozambique,MZ,87
+mikrotik,Myanmar [Burma],MM,42
+mikrotik,Namibia,"NA",24
+mikrotik,Nepal,NP,752
+mikrotik,Netherlands,NL,529
+mikrotik,New Caledonia,NC,15
+mikrotik,New Zealand,NZ,567
+mikrotik,Nicaragua,NI,166
+mikrotik,Nigeria,NG,1912
+mikrotik,Niue,NU,1
+mikrotik,Norway,NO,346
+mikrotik,Oman,OM,44
+mikrotik,Pakistan,PK,1424
+mikrotik,Palau,PW,2
+mikrotik,Palestine,PS,238
+mikrotik,Panama,PA,592
+mikrotik,Papua New Guinea,PG,90
+mikrotik,Paraguay,PY,424
+mikrotik,Peru,PE,549
+mikrotik,Philippines,PH,470
+mikrotik,Poland,PL,12303
+mikrotik,Portugal,PT,274
+mikrotik,Puerto Rico,PR,842
+mikrotik,Qatar,QA,9
+mikrotik,Republic of Korea,KR,338
+mikrotik,Republic of Lithuania,LT,691
+mikrotik,Republic of Moldova,MD,434
+mikrotik,Republic of the Congo,CG,204
+mikrotik,Réunion,RE,1
+mikrotik,Romania,RO,1900
+mikrotik,Russia,RU,23312
+mikrotik,Rwanda,RW,128
+mikrotik,Saint Kitts and Nevis,KN,5
+mikrotik,Saint Lucia,LC,1
+mikrotik,Saint Martin,MF,4
+mikrotik,Saint Vincent and the Grenadines,VC,7
+mikrotik,Samoa,WS,10
+mikrotik,San Marino,SM,1
+mikrotik,Saudi Arabia,SA,177
+mikrotik,Senegal,SN,4
+mikrotik,Serbia,RS,3545
+mikrotik,Seychelles,SC,37
+mikrotik,Sierra Leone,SL,45
+mikrotik,Singapore,SG,508
+mikrotik,Sint Maarten,SX,3
+mikrotik,Slovak Republic,SK,1991
+mikrotik,Slovenia,SI,426
+mikrotik,Somalia,SO,50
+mikrotik,South Africa,ZA,6427
+mikrotik,South Sudan,SS,22
+mikrotik,Spain,ES,5160
+mikrotik,Sri Lanka,LK,16
+mikrotik,Sudan,SD,8
+mikrotik,Swaziland,SZ,28
+mikrotik,Sweden,SE,355
+mikrotik,Switzerland,CH,235
+mikrotik,Taiwan,TW,692
+mikrotik,Tajikistan,TJ,18
+mikrotik,Tanzania,TZ,291
+mikrotik,Thailand,TH,3823
+mikrotik,Togo,TG,6
+mikrotik,Trinidad and Tobago,TT,8
+mikrotik,Tunisia,TN,1
+mikrotik,Turkey,TR,2076
+mikrotik,U.S. Virgin Islands,VI,24
+mikrotik,Uganda,UG,179
+mikrotik,Ukraine,UA,12347
+mikrotik,United Arab Emirates,AE,70
+mikrotik,United Kingdom,GB,1383
+mikrotik,United States,US,15340
+mikrotik,Uruguay,UY,429
+mikrotik,Uzbekistan,UZ,11
+mikrotik,Vanuatu,VU,1
+mikrotik,Venezuela,VE,1039
+mikrotik,Vietnam,VN,1521
+mikrotik,Zambia,ZM,527
+mikrotik,Zimbabwe,ZW,104
+mikrotik,NA,NA,11370
+netgear,Australia,AU,1
+netgear,Austria,AT,2
+netgear,Belgium,BE,1
+netgear,Canada,CA,3
+netgear,China,CN,12
+netgear,Czechia,CZ,2
+netgear,Denmark,DK,42
+netgear,France,FR,9
+netgear,Germany,DE,4
+netgear,Guernsey,GG,1
+netgear,Honduras,HN,4
+netgear,Italy,IT,2
+netgear,Japan,JP,5
+netgear,Netherlands,NL,4
+netgear,Poland,PL,1
+netgear,Qatar,QA,1
+netgear,Republic of Korea,KR,2
+netgear,Russia,RU,8
+netgear,Slovak Republic,SK,1
+netgear,Spain,ES,1
+netgear,Sweden,SE,9
+netgear,United Kingdom,GB,1
+netgear,United States,US,676
+qnap,Australia,AU,1
+qnap,Canada,CA,1
+qnap,China,CN,1
+qnap,Denmark,DK,1
+qnap,Germany,DE,3
+qnap,Japan,JP,3
+qnap,Luxembourg,LU,1
+qnap,Netherlands,NL,2
+qnap,Spain,ES,1
+qnap,Thailand,TH,1
+qnap,United Kingdom,GB,8
+qnap,United States,US,6
+tplink,Argentina,AR,3
+tplink,Australia,AU,3
+tplink,Azerbaijan,AZ,1
+tplink,Bolivia,BO,1
+tplink,Brazil,BR,2
+tplink,Bulgaria,BG,3
+tplink,Canada,CA,1
+tplink,China,CN,2
+tplink,Finland,FI,1
+tplink,Germany,DE,3
+tplink,Greece,GR,1
+tplink,Hong Kong,HK,1
+tplink,Israel,IL,1
+tplink,Italy,IT,1
+tplink,Kazakhstan,KZ,2
+tplink,Netherlands,NL,1
+tplink,Poland,PL,4
+tplink,Republic of Moldova,MD,1
+tplink,Romania,RO,2
+tplink,Russia,RU,7
+tplink,Senegal,SN,1
+tplink,Slovenia,SI,1
+tplink,Spain,ES,4
+tplink,Taiwan,TW,2
+tplink,Ukraine,UA,11
+tplink,United States,US,4
+tplink,Uzbekistan,UZ,1
+ubiquiti,Argentina,AR,1
+ubiquiti,Armenia,AM,1
+ubiquiti,Australia,AU,6
+ubiquiti,Austria,AT,1
+ubiquiti,Belgium,BE,4
+ubiquiti,Brazil,BR,36
+ubiquiti,Canada,CA,27
+ubiquiti,Chile,CL,1
+ubiquiti,China,CN,13
+ubiquiti,Costa Rica,CR,2
+ubiquiti,Curaçao,CW,1
+ubiquiti,Cyprus,CY,2
+ubiquiti,Czechia,CZ,2
+ubiquiti,Denmark,DK,13
+ubiquiti,Ecuador,EC,1
+ubiquiti,Estonia,EE,1
+ubiquiti,France,FR,3
+ubiquiti,Germany,DE,2
+ubiquiti,Greece,GR,4
+ubiquiti,Grenada,GD,2
+ubiquiti,Guatemala,GT,1
+ubiquiti,Hong Kong,HK,2
+ubiquiti,Hungary,HU,1
+ubiquiti,India,IN,4
+ubiquiti,Italy,IT,4
+ubiquiti,Japan,JP,1
+ubiquiti,Kenya,KE,14
+ubiquiti,Kuwait,KW,12
+ubiquiti,Latvia,LV,1
+ubiquiti,Malaysia,MY,1
+ubiquiti,Maldives,MV,1
+ubiquiti,Marshall Islands,MH,1
+ubiquiti,Mexico,MX,8
+ubiquiti,Myanmar [Burma],MM,1
+ubiquiti,Netherlands,NL,8
+ubiquiti,New Zealand,NZ,1
+ubiquiti,Nigeria,NG,3
+ubiquiti,Norway,NO,8
+ubiquiti,Pakistan,PK,42
+ubiquiti,Panama,PA,1
+ubiquiti,Peru,PE,5
+ubiquiti,Poland,PL,6
+ubiquiti,Portugal,PT,5
+ubiquiti,Puerto Rico,PR,4
+ubiquiti,Republic of Korea,KR,1
+ubiquiti,Republic of Moldova,MD,1
+ubiquiti,Romania,RO,4
+ubiquiti,Russia,RU,11
+ubiquiti,Singapore,SG,32
+ubiquiti,Slovak Republic,SK,4
+ubiquiti,South Africa,ZA,3
+ubiquiti,Spain,ES,4
+ubiquiti,Sweden,SE,2
+ubiquiti,Switzerland,CH,3
+ubiquiti,Taiwan,TW,1
+ubiquiti,Thailand,TH,1
+ubiquiti,Trinidad and Tobago,TT,1
+ubiquiti,Turkey,TR,1
+ubiquiti,U.S. Virgin Islands,VI,5
+ubiquiti,Uganda,UG,1
+ubiquiti,Ukraine,UA,13
+ubiquiti,United Kingdom,GB,10
+ubiquiti,United States,US,167
+ubiquiti,Venezuela,VE,16
+ubiquiti,NA,NA,8
+upvel,Russia,RU,1
+zte,Afghanistan,AF,27
+zte,Albania,AL,7
+zte,Algeria,DZ,2
+zte,Argentina,AR,8
+zte,Australia,AU,3
+zte,Austria,AT,5
+zte,Azerbaijan,AZ,8
+zte,Bangladesh,BD,41
+zte,Belize,BZ,19
+zte,Benin,BJ,1
+zte,Bolivia,BO,45
+zte,Brazil,BR,114
+zte,Bulgaria,BG,10
+zte,Cambodia,KH,7
+zte,Chile,CL,21
+zte,China,CN,19535
+zte,Colombia,CO,12
+zte,Congo,CD,3
+zte,Czechia,CZ,3
+zte,Dominican Republic,DO,2
+zte,East Timor,TL,1
+zte,Ecuador,EC,1
+zte,Egypt,EG,1
+zte,Ethiopia,ET,58
+zte,Finland,FI,4
+zte,France,FR,10
+zte,Georgia,GE,1
+zte,Germany,DE,2
+zte,Ghana,GH,2
+zte,Greece,GR,17
+zte,Hashemite Kingdom of Jordan,JO,1
+zte,Honduras,HN,3
+zte,Hong Kong,HK,2
+zte,Hungary,HU,4
+zte,India,IN,29
+zte,Indonesia,ID,3
+zte,Iran,IR,62
+zte,Iraq,IQ,1
+zte,Israel,IL,2
+zte,Italy,IT,15
+zte,Kazakhstan,KZ,1
+zte,Laos,LA,1
+zte,Lesotho,LS,2
+zte,Macao,MO,4
+zte,Macedonia,MK,4
+zte,Madagascar,MG,2
+zte,Malawi,MW,6
+zte,Malaysia,MY,23
+zte,Mali,ML,1
+zte,Mauritania,MR,2
+zte,Mexico,MX,5
+zte,Mozambique,MZ,15
+zte,Nepal,NP,168
+zte,Netherlands,NL,1
+zte,Nigeria,NG,1
+zte,Norway,NO,7
+zte,Pakistan,PK,331
+zte,Panama,PA,6
+zte,Paraguay,PY,1
+zte,Peru,PE,7
+zte,Philippines,PH,4
+zte,Poland,PL,4
+zte,Republic of Korea,KR,2
+zte,Republic of Moldova,MD,3
+zte,Romania,RO,4
+zte,Russia,RU,192
+zte,Serbia,RS,5
+zte,Singapore,SG,1
+zte,Slovak Republic,SK,1
+zte,Somalia,SO,2
+zte,South Africa,ZA,17
+zte,Spain,ES,419
+zte,Switzerland,CH,2
+zte,Taiwan,TW,5
+zte,Tajikistan,TJ,1
+zte,Tanzania,TZ,10
+zte,Thailand,TH,2
+zte,Ukraine,UA,11
+zte,United Kingdom,GB,3
+zte,United States,US,47
+zte,Uzbekistan,UZ,9
+zte,Venezuela,VE,7
+zte,Vietnam,VN,4
+zte,Zambia,ZM,7
+zte,Zimbabwe,ZW,3
+zte,NA,NA,21
