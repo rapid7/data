@@ -30,6 +30,7 @@ IPew includes the following sounds:
 - `asteroids=1` - ASTEROIDS!
 - `china=1` - Trump saying "China!"
 - `timallen=1` - Tim Allen's AUUUGH?!
+- `wow=1` - Owen Wilson's "wow"
 
 To turn off sound effects (but, but, _why?_ :-), use `nofx=1`, and to randomly cycle through them all use `allfx=1`
 

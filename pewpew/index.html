@@ -123,6 +123,7 @@ function about() {
   <audio id="asteroids" src="asteroids.mp3" preload="auto"></audio>
   <audio id="china" src="china.mp3" preload="auto"></audio>
   <audio id="timallen" src="timallen.wav" preload="auto"></audio>
+  <audio id="wow" src="wow.mp3" preload="auto"></audio>
 
   <center><div id="container1"></div></center>
   <div id="titlediv">IPew Attack Map</div>
@@ -164,7 +165,7 @@ function about() {
 
     // gotta add types here if you add more sounds (or delete them)
 
-    audio_type = [ "starwars", "tng", "b5", "wargames", "pew", "galaga", "asteroids", "china", "timallen" ]
+    audio_type = [ "starwars", "tng", "b5", "wargames", "pew", "galaga", "asteroids", "china", "timallen", "wow" ]
 
     // need this to more easily grab URI query parameters
     $.extend({
@@ -208,6 +209,7 @@ function about() {
     var asteroids = $.getUrlVar('asteroids')
     var china = $.getUrlVar('china')
     var timallen = $.getUrlVar('timallen')
+    var wow = $.getUrlVar('wow')
     var drill_mode = $.getUrlVar("drill_mode")
     var in_lat = $.getUrlVar("lat")
     var in_lon = $.getUrlVar("lon")
@@ -224,6 +226,7 @@ function about() {
     if (typeof asteroids !== 'undefined') { snd_id = "asteroids" ; }
     if (typeof china !== 'undefined') { snd_id = "china" ; }
     if (typeof timallen !== 'undefined') { snd_id = "timallen" ; }
+    if (typeof wow !== 'undefined') { snd_id = "wow" ; }
 
     if (typeof bad_day !== 'undefined') {
       attack_min=200;
