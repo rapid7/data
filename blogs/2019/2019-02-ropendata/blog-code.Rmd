@@ -1,0 +1,181 @@
+---
+title: "2019-02-ropendata"
+author: "@hrbrmstr"
+date: February 09, 2019
+output: html_document
+---
+```{r init, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.retina = 2
+)
+options(width=80)
+options(tidyverse.quiet = TRUE)
+```
+
+```{r libs, cache=FALSE}
+options(tidyverse.quiet = TRUE)
+library(stringi)
+library(ropendata) # install.packages("ropendata")
+library(tidyverse)
+```
+
+### List Studies
+
+```{r list-studies}
+studies <- list_studies()
+
+glimpse(studies)
+
+select(studies, name, uniqid) %>% 
+  arrange(name) %>% 
+  print(n=20)
+
+filter(studies, uniqid == "sonar.udp") %>% 
+  pull(sonarfile_set) %>% 
+  flatten_chr() %>% 
+  head(10)
+```
+
+### Get Study Details
+
+```{r get-study-details}
+get_file_details(
+  study_name = "sonar.udp", 
+  file_name = "2019-02-04-1549303426-udp_ubiquiti_discovery_10001.csv.gz"
+) %>% 
+  glimpse()
+```
+
+### Get File Details
+
+```{r}
+get_file_details(
+  study_name = "sonar.udp", 
+  file_name = "2019-02-04-1549303426-udp_ubiquiti_discovery_10001.csv.gz",
+  include_download_link = TRUE
+) -> ubi_dl 
+
+if (!file.exists("2019-02-04-1549303426-udp_ubiquiti_discovery_10001.csv.gz")) {
+  download.file(ubi_dl$url[1], "2019-02-04-1549303426-udp_ubiquiti_discovery_10001.csv.gz")
+}
+```
+
+### Read and Examine the File
+
+```{r read-and-examine}
+read_csv(
+  file = "~/Data/2019-02-04-1549303426-udp_ubiquiti_discovery_10001.csv.gz",
+  col_types = "dcdcdddc"
+) -> ubi_df
+
+select(ubi_df, -daddr)
+```
+
+### Enrich the Data
+
+You'll need to grab the free files from MaxMind for this.
+
+```{r enrich}
+library(rgeolocate)
+
+bind_cols(
+  ubi_df,
+  maxmind(
+    ips = ubi_df$daddr, 
+    file = "GeoLite2-City.mmdb", # Grab this from MaxMind
+    fields = c("country_code", "country_name")
+  )
+) -> ubi_df
+
+count(ubi_df, country_name, sort=TRUE) %>% 
+  mutate(pct = n/sum(n))
+```
+
+### Load a Helper Package
+
+Windows R users will need to ensure that Rtools is loaded to install development
+versions of R packages.
+
+```{r helper}
+devtools::install_git("https://git.sr.ht/~hrbrmstr/udpprobe")
+
+library(udpprobe)
+```
+
+### Make an Efficient Converter
+
+```{r efficient}
+library(Rcpp)
+
+cppFunction(depends = "BH", '
+  List dehexify(StringVector input) {
+
+    List out(input.size()); // make room for our return value
+
+    for (unsigned int i=0; i<input.size(); i++) { // iterate over the input 
+
+      if (StringVector::is_na(input[i]) || (input[i].size() == 0)) {
+        out[i] = StringVector::create(NA_STRING); // bad input
+      } else if (input[i].size() % 2 == 0) { // likey to be ok input
+
+        RawVector tmp(input[i].size() / 2); // only need half the space
+        std::string h = boost::algorithm::unhex(Rcpp::as<std::string>(input[i])); // do the work
+        std::copy(h.begin(), h.end(), tmp.begin()); // copy it to our raw vector
+
+        out[i] = tmp; // save it to the List
+
+      } else {
+        out[i] =  StringVector::create(NA_STRING); // bad input
+      }
+
+    }
+
+    return(out);
+
+  }
+', includes = c('#include <boost/algorithm/hex.hpp>')
+)
+```
+
+### Test the Converter
+
+```{r test-converter}
+parse_ubnt_discovery_response(
+  unlist(dehexify(ubi_df[["data"]][[1]]))
+)
+```
+
+### Decode the Data
+
+```{r decode}
+# infix helper for assigning a default value 'b' in the event the length of 'a' is 0
+`%l0%` <- function(a, b) if (length(a)) a else b 
+
+ubi_df %>% 
+  filter(!is.na(data)) %>% some are dead responses despite stage2 processing
+  mutate(decoded = dehexify(data)) %>% # turn it into something we can use
+  mutate(decoded = map(decoded, parse_ubnt_discovery_response)) %>% 
+  mutate(
+    name = map_chr(decoded, ~.x$name %l0% NA_character_),
+    firmware = map_chr(decoded, ~.x$firmware %l0% NA_character_),
+    model = map_chr(decoded, ~.x$model_short %l0% .x$model_long %l0% NA_character_)
+  ) %>% 
+  select(name, firmware, model) %>% 
+  filter(!is.na(firmware)) -> device_info
+
+print(device_info)
+```
+
+### Explore the Data
+
+```{r explore}
+count(device_info, model, sort=TRUE) %>% 
+  mutate(pct = n/sum(n)) %>% 
+  slice(1:20)
+
+filter(device_info, str_detect(name, "HACKED")) %>% 
+  count(name, sort=TRUE)
+```
