@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+
+<channel>
+  <title>Rapid7 Vulnerability Exposure Alertse</title>
+  <link>https://www.w3schools.com</link>
+  <description>Important Information on Emergent Critical Vulnerabilities/Campaigns</description>
+  <item>
+    <title>F5 BIG-IP Multiple Remote Code Execution vulnerabilities</title>
+    <link>http://data.labs.rapid7.com/vea/2021/2021/2021-03-19-F5-VEA.pdf</link>
+    <description>
+    <p>On March 10, 2021, F5 disclosed eight vulnerabilities, four of which are deemed "critical", the most severe of which is CVE-2021-22986, an unauthenticated remote code execution weakness that enables remote attackers to execute arbitrary commands on compromised BIG-IP devices.</p>
+    <p>On March 18, 2021, NCC Group reported in-the-wild exploitation attempts and stated that they believe final development of a complete attack chain is imminent. Other cybersecurity experts agree, prompting the creation of this VEA.</p>
+    </description>
+  </item>
+  <item>
+    <title>Multiple Microsoft Exchange zero-day vulnerabilities: HAFNIUM campaign</title>
+    <link>http://data.labs.rapid7.com/vea/2021/2021-03-04-HAFNIUM-VEA.pdf</link>
+    <description>
+    <p>On March 2, 2021, the Microsoft Threat Intelligence Center (MSTIC) released details on an active
+    state-sponsored threat campaign, which is leveraging four zero-day vulnerabilities to attack on-premise
+    instances of Microsoft Exchange Server.</p>
+    <p>In the attacks observed by Microsoft, the threat actor used the vulnerabilities to access on-premise
+    Exchange servers, enabling them to access email accounts and allowing installation of additional
+    malware to facilitate persistent access to victim environments. Microsoft Threat Intelligence Center
+    (MSTIC) attributes this campaign with high confidence to HAFNIUM, a group assessed to be
+    state-sponsored and operating out of China, based on observed victimology, tactics and procedures.</p>
+</description>
+  </item>
+</channel>
+
+</rss>
+
+
+
+     <li>2021-03-19: <a rel="nofollow" href="2021/2021-03-19-F5-VEA.pdf">F5 BIG-IP Multiple Remote Code Execution vulnerabilities</a> [PDF]
+     <li>2021-03-04: <a rel="nofollow" href="2021/2021-03-04-HAFNIUM-VEA.pdf">Multiple Microsoft Exchange zero-day vulnerabilities: HAFNIUM campaign</a> [PDF]
