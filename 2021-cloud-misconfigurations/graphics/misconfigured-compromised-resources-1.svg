@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='480.00pt' height='300.00pt' viewBox='0 0 480.00 300.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw0ODAuMDB8MC4wMHwzMDAuMDA='>
+    <rect x='0.00' y='0.00' width='480.00' height='300.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw0ODAuMDB8MC4wMHwzMDAuMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpOTAuODJ8NDUwLjExfDEwNC4xN3wyNzAuMTE='>
+    <rect x='90.82' y='104.17' width='359.29' height='165.94' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpOTAuODJ8NDUwLjExfDEwNC4xN3wyNzAuMTE=)'>
+<polyline points='94.34,270.11 94.34,104.17 ' style='stroke-width: 0.43; stroke: #CCCCCC; stroke-linecap: butt;' />
+<polyline points='165.38,270.11 165.38,104.17 ' style='stroke-width: 0.43; stroke: #CCCCCC; stroke-linecap: butt;' />
+<polyline points='236.42,270.11 236.42,104.17 ' style='stroke-width: 0.43; stroke: #CCCCCC; stroke-linecap: butt;' />
+<polyline points='307.45,270.11 307.45,104.17 ' style='stroke-width: 0.43; stroke: #CCCCCC; stroke-linecap: butt;' />
+<polyline points='378.49,270.11 378.49,104.17 ' style='stroke-width: 0.43; stroke: #CCCCCC; stroke-linecap: butt;' />
+<polyline points='449.53,270.11 449.53,104.17 ' style='stroke-width: 0.43; stroke: #CCCCCC; stroke-linecap: butt;' />
+<rect x='94.34' y='110.51' width='352.25' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+<rect x='94.34' y='133.56' width='176.12' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+<rect x='94.34' y='156.60' width='140.90' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+<rect x='94.34' y='179.65' width='17.61' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+<rect x='94.34' y='202.70' width='11.74' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+<rect x='94.34' y='225.75' width='5.87' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+<rect x='94.34' y='248.79' width='5.87' height='14.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #31739C;' />
+</g>
+<g clip-path='url(#cpMC4wMHw0ODAuMDB8MC4wMHwzMDAuMDA=)'>
+<text x='94.34' y='99.69' text-anchor='middle' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='12.31px' lengthAdjust='spacingAndGlyphs'>0%</text>
+<text x='165.38' y='99.69' text-anchor='middle' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>10%</text>
+<text x='236.42' y='99.69' text-anchor='middle' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>20%</text>
+<text x='307.45' y='99.69' text-anchor='middle' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>30%</text>
+<text x='378.49' y='99.69' text-anchor='middle' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>40%</text>
+<text x='449.53' y='99.69' text-anchor='middle' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>50%</text>
+<text x='88.33' y='259.13' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='16.83px' lengthAdjust='spacingAndGlyphs'>NAS</text>
+<text x='88.33' y='236.09' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='48.03px' lengthAdjust='spacingAndGlyphs'>Akamai CDN</text>
+<text x='88.33' y='213.04' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='40.70px' lengthAdjust='spacingAndGlyphs'>Azure Blob</text>
+<text x='88.33' y='189.99' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='49.54px' lengthAdjust='spacingAndGlyphs'>Google Cloud</text>
+<text x='88.33' y='166.95' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='48.69px' lengthAdjust='spacingAndGlyphs'>Elasticsearch</text>
+<text x='88.33' y='143.90' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='31.63px' lengthAdjust='spacingAndGlyphs'>AWS S3</text>
+<text x='88.33' y='120.85' text-anchor='end' style='font-size: 8.00px; fill: #4D4D4D; font-family: Muli;' textLength='35.54px' lengthAdjust='spacingAndGlyphs'>Unknown</text>
+<text x='450.11' y='91.50' text-anchor='end' style='font-size: 9.00px; font-family: Muli;' textLength='48.17px' lengthAdjust='spacingAndGlyphs'>% Incidents</text>
+<text transform='translate(36.30,104.17) rotate(-90)' text-anchor='end' style='font-size: 9.00px; font-family: Muli;' textLength='108.53px' lengthAdjust='spacingAndGlyphs'>Compromised Component</text>
+<text x='29.89' y='53.53' style='font-size: 10.00px; font-family: Muli;' textLength='383.77px' lengthAdjust='spacingAndGlyphs'>While just under half the incidents did not include the specifics of the misconfigured</text>
+<text x='29.89' y='64.33' style='font-size: 10.00px; font-family: Muli;' textLength='387.12px' lengthAdjust='spacingAndGlyphs'>technology component(s) that lead to record disclosure, the "usual suspects" topped</text>
+<text x='29.89' y='75.13' style='font-size: 10.00px; font-family: Muli;' textLength='124.25px' lengthAdjust='spacingAndGlyphs'>the list in the ones that did.</text>
+<text x='29.89' y='38.43' style='font-size: 12.00px; font-weight: bold; font-family: Muli;' textLength='321.44px' lengthAdjust='spacingAndGlyphs'>Misconfigured, Comprised Resources Disclosing Records</text>
+</g>
+</svg>
