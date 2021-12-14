@@ -1,0 +1,1 @@
+- `exploit-strings.txt` : JNDI exploit attempts seen in our Project Heisenberg network (updated occassionally)
