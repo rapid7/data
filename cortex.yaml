@@ -1,0 +1,14 @@
+---
+info:
+  title: Data
+  x-cortex-git:
+    github:
+      alias: r7org
+      repository: rapid7/data
+  x-cortex-tag: data
+  x-cortex-type: service
+  x-cortex-domain-parents:
+  - tag: octo-and-labs
+openapi: 3.0.1
+servers:
+- url: "/"
